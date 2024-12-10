@@ -23,28 +23,28 @@ jobs:
         config:
           - {
               os: ubuntu-latest,
-              command: "make libzstd CC=i686-unknown-linux-gnu-gcc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-x64",
               }
           - {
               os: ubuntu-latest,
-              command: "make libzstd CC=i686-unknown-linux-musl-gcc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make libzstd CC=x86_64-linux-musl-gcc x86_64-linux-musl-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-musl-x64",
               }
           - {
               os: ubuntu-latest,
-              command: "make libzstd CC=aarch64-unknown-linux-gnu-gcc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make libzstd CC=aarch64-linux-gnu-gcc LD=aarch64-linux-gnu-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-arm64",
               }
           - {
               os: ubuntu-latest,
-              command: "make libzstd CC=aarch64-unknown-linux-musl-gcc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make libzstd CC=aarch64-linux-musl-gcc LD=aarch64-linux-musl-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-musl-arm64",
@@ -58,14 +58,14 @@ jobs:
               }
           - {
               os: macos-latest,
-              command: "make libzstd CC=arm64e-apple-darwin-gcc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.dylib",
               file: "libzstd.dylib",
               rid: "osx-arm64",
           }
           - {
               os: windows-latest,
-              command: "make libzstd CC=i686-pc-windows-msvc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "dll/libzstd.dll",
               file: "libzstd.dll",
               rid: "win-x64",
