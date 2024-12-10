@@ -1,2 +1,10 @@
 # DSharpPlus.Natives
-contains packaging code for native libraries used by DSharpPlus
+
+This repository contains packaging code for native libraries used by DSharpPlus
+
+- Opus
+  - .github/workflows/opus.yml
+- Sodium
+  - .github/workflows/sodium.yml
+- ZSTD
+  - .github/workflows/zstd.yml
