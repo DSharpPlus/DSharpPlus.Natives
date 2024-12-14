@@ -1,0 +1,64 @@
+name: Build sodium
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/sodium.yml'
+      - '.github/scripts/package-sodium.sh'
+
+jobs:
+  build:
+    name: Build sodium
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone sodium repo
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: jedisct1/libsodium
+          submodules: recursive
+
+      - name: Checkout latest Tag
+        shell: bash
+        run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+      
+      - name: Build sodium
+        shell: bash
+        run: |
+          # TODO: Figure out how to build a "fat" dylib for macos, which can be used on x86_64 and aarch64 https://github.com/ziglang/zig/issues/9169
+          wget https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz
+          tar -xf zig-linux-x86_64-0.13.0.tar.xz -C . --strip-components=1
+          mkdir -p output-{windows,linux,macos}/{x64,ARM64} # Keep x64 and ARM64 naming from zstd/opus workflows for consistency
+          for target in x86_64-windows x86_64-linux x86_64-macos aarch64-windows aarch64-linux aarch64-macos; do
+            # Docs use ReleaseFast instead of ReleaseSafe, so ill use it here as well
+            ./zig build -Doptimize=ReleaseFast -Dtarget=$target -p $target
+          done
+          cp x86_64-windows/bin/libsodium.dll output-windows/x64/libsodium.dll # No clue why for windows the output is in bin/ and not lib/
+          cp aarch64-windows/bin/libsodium.dll output-windows/ARM64/libsodium.dll
+          cp x86_64-linux/lib/libsodium.so output-linux/x64/libsodium.so
+          cp aarch64-linux/lib/libsodium.so output-linux/ARM64/libsodium.so
+          cp x86_64-macos/lib/libsodium.dylib output-macos/x64/libsodium.dylib
+          cp aarch64-macos/lib/libsodium.dylib output-macos/ARM64/libsodium.dylib
+
+      - name: Publish Artifacts for Windows
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: sodium-windows-latest # Keep naming for consistency 
+          path: output-windows
+          compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
+
+      - name: Publish Artifacts for Linux
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: sodium-ubuntu-latest
+          path: output-linux
+          compression-level: 9
+
+      - name: Publish Artifacts for MacOS
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: sodium-macos-latest
+          path: output-macos
+          compression-level: 9
