@@ -50,8 +50,8 @@ jobs:
               cd build-$arch
               if [[ "$arch" == "ARM64" ]]; then
                 cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_BUILD_TYPE=Release ..
-              elif
-                cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF ..
+              else
+                cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release ..
               fi
               cmake --build . -j 4
               cp lib/libzstd.so ../../../output/$arch/libzstd.so
@@ -60,7 +60,7 @@ jobs:
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             mkdir build ../../output
             cd build
-            cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON "-DCMAKE_OSX_ARCHITECTURES=arm64;arm64e;x86_64;x86_64h" -DCMAKE_BUILD_TYPE=Release  ..
+            cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON "-DCMAKE_OSX_ARCHITECTURES=arm64;arm64e;x86_64;x86_64h" -DCMAKE_BUILD_TYPE=Release ..
             cmake --build . -j 4 --config Release
             ls -R
             cp lib/libzstd.dylib ../../../output/libzstd.dylib
