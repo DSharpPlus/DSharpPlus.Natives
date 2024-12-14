@@ -29,7 +29,7 @@ jobs:
       #  shell: bash
       #  run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
       
-      - name: Build Zstd
+      - name: Build zstd
         shell: bash
         run: |
           cd build/cmake
