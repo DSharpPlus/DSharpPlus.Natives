@@ -31,7 +31,6 @@ jobs:
       - name: Build opus
         shell: bash
         run: |
-          cd build/cmake
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             for arch in x64 ARM64; do # We dont want Win32
               mkdir -p output/$arch
