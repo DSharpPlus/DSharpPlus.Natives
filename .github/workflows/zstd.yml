@@ -23,7 +23,7 @@ jobs:
         config:
           - {
               os: windows-latest,
-              command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              command: "make ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "dll\\libzstd.dll",
               file: "libzstd.dll",
               rid: "win-x64",
