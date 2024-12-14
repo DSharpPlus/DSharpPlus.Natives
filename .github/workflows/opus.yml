@@ -1,0 +1,76 @@
+name: Build opus
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/opus.yml'
+      - '.github/scripts/package-opus.sh'
+
+jobs:
+  build:
+    name: Build opus
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # Run the other two OSs even if one fails
+      matrix:
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+          
+    steps:
+      - name: Clone opus repo
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: xiph/opus
+          submodules: recursive
+
+      - name: Checkout latest Tag
+        shell: bash
+        run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+      
+      - name: Build opus
+        shell: bash
+        run: |
+          cd build/cmake
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            for arch in x64 ARM64; do # We dont want Win32
+              mkdir -p output/$arch
+              mkdir build-$arch
+              cd build-$arch
+              cmake -DOPUS_BUILD_SHARED_LIBRARY=ON -DOPUS_X86_PRESUME_SSE=OFF -DOPUS_X86_PRESUME_SSE2=OFF -DCMAKE_BUILD_TYPE=Release -A $arch ..
+              cmake --build . -j 4 --config Release
+              ls
+              cp Release/opus.dll ../output/$arch/libopus.dll
+              cd ..
+            done
+          elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            for arch in x64 ARM64; do
+              mkdir -p output/$arch
+              mkdir build-$arch
+              cd build-$arch
+              if [[ "$arch" == "ARM64" ]]; then
+                sudo apt update
+                sudo apt install cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+                cmake -DOPUS_BUILD_SHARED_LIBRARY=ON -DOPUS_X86_PRESUME_SSE=OFF -DOPUS_X86_PRESUME_SSE2=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ ..
+              else
+                cmake -DOPUS_BUILD_SHARED_LIBRARY=ON -DOPUS_X86_PRESUME_SSE=OFF -DOPUS_X86_PRESUME_SSE2=OFF -DCMAKE_BUILD_TYPE=Release ..
+              fi
+              cmake --build . -j 4
+              cp libopus.so ../output/$arch/libopus.so
+              cd ..
+            done
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            mkdir build output
+            cd build
+            cmake -DOPUS_BUILD_SHARED_LIBRARY=ON -DOPUS_X86_PRESUME_SSE=OFF -DOPUS_X86_PRESUME_SSE2=OFF -DCMAKE_BUILD_TYPE=Release "-DCMAKE_OSX_ARCHITECTURES=arm64;arm64e;x86_64;x86_64h" ..
+            cmake --build . -j 4 --config Release
+            cp libopus.dylib ../output/libopus.dylib
+            cd ..
+          fi
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: opus-${{ matrix.os }}
+          path: output
+          compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
