@@ -24,6 +24,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              toolchain: "gcc",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-x64",
@@ -31,6 +32,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd CC=x86_64-linux-musl-gcc x86_64-linux-musl-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              toolchain: "gcc-x86_64-linux-musl",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-musl-x64",
@@ -38,6 +40,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd CC=aarch64-linux-gnu-gcc LD=aarch64-linux-gnu-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              toolchain: "gcc-aarch64-linux-gnu",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-arm64",
@@ -45,6 +48,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd CC=aarch64-linux-musl-gcc LD=aarch64-linux-musl-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
+              toolchain: "gcc-aarch64-linux-musl",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-musl-arm64",
@@ -53,6 +57,7 @@ jobs:
               os: macos-latest,
               command: "make libzstd CC=x86_64-apple-darwin-gcc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.dylib",
+              toolchain: "placeholder",
               file: "libzstd.dylib",
               rid: "osx-x64",
               }
@@ -60,6 +65,7 @@ jobs:
               os: macos-latest,
               command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "libzstd.dylib",
+              toolchain: "placeholder",
               file: "libzstd.dylib",
               rid: "osx-arm64",
           }
@@ -67,6 +73,7 @@ jobs:
               os: windows-latest,
               command: "make libzstd ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "dll/libzstd.dll",
+              toolchain: "placeholder",
               file: "libzstd.dll",
               rid: "win-x64",
               arch: "x64"
@@ -75,6 +82,7 @@ jobs:
               os: windows-latest,
               command: "make libzstd CC=aarch64-pc-windows-msvc ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
               output-file: "dll/libzstd.dll",
+              toolchain: "placeholder",
               file: "libzstd.dll",
               rid: "win-arm64",
               arch: "arm64"
@@ -95,6 +103,7 @@ jobs:
           export RID='${{ matrix.config.rid }}'
           export JOB_INDEX='${{ strategy.job-index }}'
           export GITHUB_RUN_NUMBER='${{ github.run_number }}'
+          export CC_TOOLCHAIN='${{ matrix.config.toolchain }}'
           bash '${{ github.workspace }}/.github/scripts/package-libzstd.sh'
       - name: "Update ${{ matrix.config.rid }}"
         uses: EndBug/add-and-commit@v9

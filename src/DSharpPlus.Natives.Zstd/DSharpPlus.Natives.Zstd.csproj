@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>Provides the dynamic library files for zstd.</Description>
     <PackageTags>discord, discord-bot, discord-api, dsharpplus, zstd</PackageTags>
-    <Authors>DSharpPlus contributors</Authors>
+    <Authors>zstd contributors</Authors>
     <IsPackable>true</IsPackable>
     <Version>1.0.0</Version>
   </PropertyGroup>

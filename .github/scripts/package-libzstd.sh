@@ -21,6 +21,7 @@ cd "lib"
 set -e
 
 # build the library
+sudo apt install $TOOLCHAIN
 $COMMAND
 
 # move the output file to the correct location
