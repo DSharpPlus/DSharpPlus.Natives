@@ -12,7 +12,7 @@ LIBZSTD_VERSION="$(git describe --tags $(git rev-list --tags --max-count=1))"
 echo "version=$(echo $LIBZSTD_VERSION | perl -pe '($_)=/([0-9]+([.][0-9]+)+)/').$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
 
 # Checkout the latest tag
-git checkout "$LIBZSTD_VERSION"
+#  git checkout "$LIBZSTD_VERSION"
 
 # set the working directory to `lib`, where the makefile we want is located
 cd "lib"
