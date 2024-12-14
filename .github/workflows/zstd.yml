@@ -64,7 +64,6 @@ jobs:
             cd build
             cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON "-DCMAKE_OSX_ARCHITECTURES=arm64;arm64e;x86_64;x86_64h" -DCMAKE_BUILD_TYPE=Release ..
             cmake --build . -j 4 --config Release
-            ls -R
             cp lib/libzstd.dylib ../../../output/libzstd.dylib
             cd ..
           fi
