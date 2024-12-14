@@ -32,7 +32,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd CC=x86_64-linux-musl-gcc x86_64-linux-musl-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
-              toolchain: "gcc-x86_64-linux-musl",
+              toolchain: "gcc-14-x86_64-linux-musl",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-musl-x64",
@@ -40,7 +40,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd CC=aarch64-linux-gnu-gcc LD=aarch64-linux-gnu-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
-              toolchain: "gcc-aarch64-linux-gnu",
+              toolchain: "gcc-14-aarch64-linux-gnu",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-arm64",
@@ -48,7 +48,7 @@ jobs:
           - {
               os: ubuntu-latest,
               command: "make libzstd CC=aarch64-linux-musl-gcc LD=aarch64-linux-musl-ld ZSTD_LIB_DEPRECATED=0 ZSTD_LEGACY_SUPPORT=0",
-              toolchain: "gcc-aarch64-linux-musl",
+              toolchain: "gcc-14-aarch64-linux-musl",
               output-file: "libzstd.so",
               file: "libzstd.so",
               rid: "linux-musl-arm64",
