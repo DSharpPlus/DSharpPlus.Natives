@@ -29,7 +29,7 @@ jobs:
         run: |
           # TODO: Figure out how to build a "fat" dylib for macos, which can be used on x86_64 and aarch64 https://github.com/ziglang/zig/issues/9169
           wget -nv https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz
-          tar -xvf zig-linux-x86_64-0.13.0.tar.xz -C . --strip-components=1
+          tar -xf zig-linux-x86_64-0.13.0.tar.xz -C . --strip-components=1
           mkdir -p output-{windows,linux,macos}/{x64,ARM64} # Keep x64 and ARM64 naming from zstd/opus workflows for consistency
           for target in x86_64-windows x86_64-linux x86_64-macos aarch64-windows aarch64-linux aarch64-macos; do
             # Docs use ReleaseFast instead of ReleaseSafe, so ill use it here as well
