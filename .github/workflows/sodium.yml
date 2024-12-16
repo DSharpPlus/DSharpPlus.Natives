@@ -114,4 +114,4 @@ jobs:
           VERSION=${{ needs.build.outputs.version }}
           VERSION="${VERSION%%_*}"
           dotnet pack ./build/DSharpPlus.Natives.Sodium.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
-          dotnet nuget push "artifacts/*" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
+          dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
