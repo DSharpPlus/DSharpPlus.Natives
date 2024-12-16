@@ -7,6 +7,6 @@
         <UseArtifactsOutput>true</UseArtifactsOutput>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="./icon/dsharpplus.png" Pack="true" PackagePath="" />
+        <None Include="../icon/dsharpplus.png" Pack="true" PackagePath="" />
     </ItemGroup>
 </Project>
