@@ -28,9 +28,10 @@ jobs:
 
       - name: Print Version
         id: print-version
+        shell: bash
         run: |
           git fetch --tags 
-          version=$(git describe --tags --abbrev=0) >> $GITHUB_OUTPUT
+          version=$(git describe --tags $(git rev-list --tags --max-count=1)) >> $GITHUB_OUTPUT
       
       - name: Build sodium
         shell: bash
@@ -100,9 +101,11 @@ jobs:
           cp temp/ARM64/libsodium.dylib lib/zstd/osx-arm64/native/libsodium.dylib
 
       - name: Pack DSharpPlus.Natives.Sodium
+        shell: bash
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           VERSION=${{ needs.build.outputs.version }}
+          VERSION="${VERSION%%_*}"
           dotnet pack ./build/DSharpPlus.Natives.Sodium.csproj -c Release -p:Version="$(VERSION).( ${{ github.run_number }} )"
           dotnet nuget push "artifacts/*" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
