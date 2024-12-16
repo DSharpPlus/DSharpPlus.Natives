@@ -106,11 +106,11 @@ jobs:
 
       - name: Move Artifacts
         run: |
-          mkdir lib/opus/win-x64/native
-          mkdir lib/opus/linux-x64/native
-          mkdir lib/opus/win-arm64/native
-          mkdir lib/opus/linux-arm64/native
-          mkdir lib/opus/osx/native
+          mkdir -p lib/opus/win-x64/native
+          mkdir -p lib/opus/linux-x64/native
+          mkdir -p lib/opus/win-arm64/native
+          mkdir -p lib/opus/linux-arm64/native
+          mkdir -p lib/opus/osx/native
           cp temp/x64/libopus.dll lib/opus/win-x64/native/libopus.dll
           cp temp/x64/libopus.so lib/opus/linux-x64/native/libopus.so
           cp temp/ARM64/libopus.dll lib/opus/win-arm64/native/libopus.dll
