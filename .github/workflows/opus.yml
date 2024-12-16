@@ -37,6 +37,8 @@ jobs:
         run: |
           git fetch --tags 
           version=$(git describe --tags $(git rev-list --tags --max-count=1)) >> $GITHUB_OUTPUT
+
+          echo $version >> $GITHUB_STEP_SUMMARY
       
       - name: Build opus
         shell: bash
@@ -101,7 +103,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: temp
-          pattern: zstd-*
+          pattern: opus-*
           merge-multiple: true
 
       - name: Move Artifacts
@@ -111,7 +113,6 @@ jobs:
           mkdir -p lib/opus/win-arm64/native
           mkdir -p lib/opus/linux-arm64/native
           mkdir -p lib/opus/osx/native
-          tree temp
           cp temp/x64/libopus.dll lib/opus/win-x64/native/libopus.dll
           cp temp/x64/libopus.so lib/opus/linux-x64/native/libopus.so
           cp temp/ARM64/libopus.dll lib/opus/win-arm64/native/libopus.dll
@@ -125,5 +126,5 @@ jobs:
         run: |
           VERSION=${{ needs.build.outputs.version }}
           VERSION="${VERSION:1}"
-          dotnet pack ./build/DSharpPlus.Natives.Opus.csproj -c Release -p:Version="$(VERSION).( ${{ github.run_number }} )"
+          dotnet pack ./build/DSharpPlus.Natives.Opus.csproj -c Release -p:Version="$(VERSION).${{ github.run_number }}"
           dotnet nuget push "artifacts/*" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
