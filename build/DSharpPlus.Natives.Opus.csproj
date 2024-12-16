@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Provides the dynamic library files for opus.</Description>
+    <PackageTags>discord, discord-bot, discord-api, dsharpplus, opus</PackageTags>
+    <Authors>opus contributors</Authors>
+    <IsPackable>true</IsPackable>
+    <PackageLicenseFile>opus.license</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(ProjectRoot)/../libs/opus/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="$(ProjectRoot)/../licenses/opus.license" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>

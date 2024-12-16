@@ -6,12 +6,14 @@ on:
       - master
     paths:
       - '.github/workflows/sodium.yml'
-      - '.github/scripts/package-sodium.sh'
 
 jobs:
   build:
     name: Build sodium
     runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.print-version.outputs.version }}
 
     steps:
       - name: Clone sodium repo
@@ -23,6 +25,12 @@ jobs:
       - name: Checkout latest Tag
         shell: bash
         run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+
+      - name: Print Version
+        id: print-version
+        run: |
+          git fetch --tags 
+          version=$(git describe --tags --abbrev=0) >> $GITHUB_OUTPUT
       
       - name: Build sodium
         shell: bash
@@ -62,3 +70,39 @@ jobs:
           name: sodium-macos-latest
           path: output-macos
           compression-level: 9
+
+  publish-nuget:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout CSPROJ files
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: temp
+          pattern: sodium-*
+          merge-multiple: true
+
+      - name: Move Artifacts
+        run: |
+          cp temp/x64/libsodium.dll lib/zstd/win-x64/native/libsodium.dll
+          cp temp/x64/libsodium.so lib/zstd/linux-x64/native/libsodium.so
+          cp temp/x64/libsodium.dylib lib/zstd/osx-x64/native/libsodium.dylib
+          cp temp/ARM64/libsodium.dll lib/zstd/win-arm64/native/libsodium.dll
+          cp temp/ARM64/libsodium.so lib/zstd/linux-arm64/native/libsodium.so
+          cp temp/ARM64/libsodium.dylib lib/zstd/osx-arm64/native/libsodium.dylib
+
+      - name: Pack DSharpPlus.Natives.Sodium
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          VERSION=${{ needs.build.outputs.version }}
+          dotnet pack ./build/DSharpPlus.Natives.Sodium.csproj -c Release -p:Version="$(VERSION).( ${{ github.run_number }} )"
+          dotnet nuget push "artifacts/*" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json

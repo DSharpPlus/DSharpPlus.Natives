@@ -6,12 +6,15 @@ on:
       - master
     paths:
       - '.github/workflows/opus.yml'
-      - '.github/scripts/package-opus.sh'
 
 jobs:
   build:
     name: Build opus
     runs-on: ${{ matrix.os }}
+
+    outputs:
+      version: ${{ steps.print-version.outputs.version }}
+
     strategy:
       fail-fast: false # Run the other two OSs even if one fails
       matrix:
@@ -27,6 +30,12 @@ jobs:
       - name: Checkout latest Tag
         shell: bash
         run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+
+      - name: Print Version
+        id: print-version
+        run: |
+          git fetch --tags 
+          version=$(git describe --tags --abbrev=0) >> $GITHUB_OUTPUT
       
       - name: Build opus
         shell: bash
@@ -73,3 +82,39 @@ jobs:
           name: opus-${{ matrix.os }}
           path: output
           compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
+
+
+  publish-nuget:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout CSPROJ files
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: temp
+          pattern: zstd-*
+          merge-multiple: true
+
+      - name: Move Artifacts
+        run: |
+          cp temp/x64/libopus.dll lib/zstd/win-x64/native/libopus.dll
+          cp temp/x64/libopus.so lib/zstd/linux-x64/native/libopus.so
+          cp temp/ARM64/libopus.dll lib/zstd/win-arm64/native/libopus.dll
+          cp temp/ARM64/libopus.so lib/zstd/linux-arm64/native/libopus.so
+          cp temp/libopus.dylib lib/zstd/osx/native/libopus.dylib
+
+      - name: Pack DSharpPlus.Natives.Opus
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          VERSION=${{ needs.build.outputs.version }}
+          dotnet pack ./build/DSharpPlus.Natives.Opus.csproj -c Release -p:Version="$(VERSION).( ${{ github.run_number }} )"
+          dotnet nuget push "artifacts/*" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json

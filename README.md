@@ -1,10 +1,13 @@
 # DSharpPlus.Natives
 
-This repository contains packaging code for native libraries used by DSharpPlus
+This repository contains packaging code for native libraries used by DSharpPlus. All libraries are licensed under their original licenses, and DSharpPlus makes no claim to ownership or maintainership of any of these libraries.
 
 - Opus
-  - .github/workflows/opus.yml
+  - buildscript: .github/workflows/opus.yml
+  - license: licenses/opus.license
 - Sodium
-  - .github/workflows/sodium.yml
+  - buildscript: .github/workflows/sodium.yml
+  - license: licenses/sodium.license
 - ZSTD
-  - .github/workflows/zstd.yml
+  - buildscript: .github/workflows/zstd.yml
+  - license: licenses/zstd.license

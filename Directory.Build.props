@@ -1,0 +1,12 @@
+<Project>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <PackageIcon>dsharpplus.png</PackageIcon>
+        <IsPackable>true</IsPackable>
+        <UseArtifactsOutput>true</UseArtifactsOutput>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="./icon/dsharpplus.png" Pack="true" PackagePath="" />
+    </ItemGroup>
+</Project>

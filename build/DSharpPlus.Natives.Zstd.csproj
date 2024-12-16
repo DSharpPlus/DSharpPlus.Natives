@@ -3,12 +3,10 @@
     <Description>Provides the dynamic library files for zstd.</Description>
     <PackageTags>discord, discord-bot, discord-api, dsharpplus, zstd</PackageTags>
     <Authors>zstd contributors</Authors>
-    <IsPackable>true</IsPackable>
-    <Version>1.0.0</Version>
+    <PackageLicenseFile>zstd.license</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="$(ProjectRoot)/libs/libsodium/**/*" Pack="true" PackagePath="runtimes" />
-    <EmbeddedResource Include="LICENSE" Pack="true" PackagePath=""/>
-    <EmbeddedResource Include="README.md" Pack="true" PackagePath=""/>
+    <None Include="$(ProjectRoot)/../libs/zstd/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="$(ProjectRoot)/../licenses/zstd.license" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>

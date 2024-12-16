@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Provides the dynamic library files for sodium.</Description>
+    <PackageTags>discord, discord-bot, discord-api, dsharpplus, libsodium</PackageTags>
+    <Authors>libsodium contributors</Authors>
+    <IsPackable>true</IsPackable>
+    <PackageLicenseFile>sodium.license</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(ProjectRoot)/../libs/libsodium/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="$(ProjectRoot)/../licenses/sodium.license" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>
