@@ -7,6 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="../libs/zstd/**/*" Pack="true" PackagePath="runtimes" />
-    <None Include="../licenses/zstd.license" Pack="true" PackagePath="" />
+    <None Include="../licenses/zstd.license.md" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
