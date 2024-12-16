@@ -42,7 +42,7 @@ jobs:
           mkdir -p output-{windows,linux,macos}/{x64,ARM64} # Keep x64 and ARM64 naming from zstd/opus workflows for consistency
           for target in x86_64-windows x86_64-linux x86_64-macos aarch64-windows aarch64-linux aarch64-macos; do
             # Docs use ReleaseFast instead of ReleaseSafe, so ill use it here as well
-            ./zig build -Doptimize=ReleaseFast -Dtarget=$target -p $target
+            ./zig build -Doptimize=ReleaseFast -Dtarget=$target -p $target --summary all
           done
           cp x86_64-windows/bin/libsodium.dll output-windows/x64/libsodium.dll # No clue why for windows the output is in bin/ and not lib/
           cp aarch64-windows/bin/libsodium.dll output-windows/ARM64/libsodium.dll
