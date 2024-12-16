@@ -7,7 +7,7 @@
     <PackageLicenseFile>sodium-license.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="../libs/libsodium/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="../lib/libsodium/**/*" Pack="true" PackagePath="runtimes" />
     <None Include="../licenses/sodium-license.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
