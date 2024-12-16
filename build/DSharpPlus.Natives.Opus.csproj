@@ -7,7 +7,7 @@
     <PackageLicenseFile>opus.license</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="$(ProjectRoot)/../libs/opus/**/*" Pack="true" PackagePath="runtimes" />
-    <None Include="$(ProjectRoot)/../licenses/opus.license" Pack="true" PackagePath="" />
+    <None Include="../libs/opus/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="../licenses/opus.license" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>

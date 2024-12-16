@@ -6,7 +6,7 @@
     <PackageLicenseFile>zstd.license</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="$(ProjectRoot)/../libs/zstd/**/*" Pack="true" PackagePath="runtimes" />
-    <None Include="$(ProjectRoot)/../licenses/zstd.license" Pack="true" PackagePath="" />
+    <None Include="../libs/zstd/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="../licenses/zstd.license" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
