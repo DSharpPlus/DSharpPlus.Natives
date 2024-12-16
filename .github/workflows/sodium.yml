@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           git fetch --tags 
-          version=$(git describe --tags $(git rev-list --tags --max-count=1)) >> $GITHUB_OUTPUT
+          echo "version=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
       
       - name: Build sodium
         shell: bash
