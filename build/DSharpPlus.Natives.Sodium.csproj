@@ -4,7 +4,7 @@
     <PackageTags>discord, discord-bot, discord-api, dsharpplus, libsodium</PackageTags>
     <Authors>libsodium contributors</Authors>
     <IsPackable>true</IsPackable>
-    <PackageLicenseFile>sodium.license</PackageLicenseFile>
+    <PackageLicenseFile>sodium-license.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../libs/libsodium/**/*" Pack="true" PackagePath="runtimes" />

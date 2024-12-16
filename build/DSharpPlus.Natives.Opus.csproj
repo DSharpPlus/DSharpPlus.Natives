@@ -4,7 +4,7 @@
     <PackageTags>discord, discord-bot, discord-api, dsharpplus, opus</PackageTags>
     <Authors>opus contributors</Authors>
     <IsPackable>true</IsPackable>
-    <PackageLicenseFile>opus.license</PackageLicenseFile>
+    <PackageLicenseFile>opus-license.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../libs/opus/**/*" Pack="true" PackagePath="runtimes" />

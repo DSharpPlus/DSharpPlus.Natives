@@ -3,7 +3,7 @@
     <Description>Provides the dynamic library files for zstd.</Description>
     <PackageTags>discord, discord-bot, discord-api, dsharpplus, zstd</PackageTags>
     <Authors>zstd contributors</Authors>
-    <PackageLicenseFile>zstd.license</PackageLicenseFile>
+    <PackageLicenseFile>zstd-license.txt</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <None Include="../libs/zstd/**/*" Pack="true" PackagePath="runtimes" />
