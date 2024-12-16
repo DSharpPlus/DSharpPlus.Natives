@@ -8,6 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="../libs/opus/**/*" Pack="true" PackagePath="runtimes" />
-    <None Include="../licenses/opus.license.md" Pack="true" PackagePath="" />
+    <None Include="../licenses/opus-license.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>

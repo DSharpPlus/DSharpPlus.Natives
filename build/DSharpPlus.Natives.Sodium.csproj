@@ -8,6 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="../libs/libsodium/**/*" Pack="true" PackagePath="runtimes" />
-    <None Include="../licenses/sodium.license.md" Pack="true" PackagePath="" />
+    <None Include="../licenses/sodium-license.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 </Project>
