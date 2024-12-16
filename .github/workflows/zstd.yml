@@ -107,6 +107,11 @@ jobs:
 
       - name: Move Artifacts
         run: |
+          mkdir lib/zstd/win-x64/native
+          mkdir lib/zstd/linux-x64/native
+          mkdir lib/zstd/win-arm64/native
+          mkdir lib/zstd/linux-arm64/native
+          mkdir lib/zstd/osx/native
           cp temp/x64/libzstd.dll lib/zstd/win-x64/native/libzstd.dll
           cp temp/x64/libzstd.so lib/zstd/linux-x64/native/libzstd.so
           cp temp/ARM64/libzstd.dll lib/zstd/win-arm64/native/libzstd.dll

@@ -106,11 +106,16 @@ jobs:
 
       - name: Move Artifacts
         run: |
-          cp temp/x64/libopus.dll lib/zstd/win-x64/native/libopus.dll
-          cp temp/x64/libopus.so lib/zstd/linux-x64/native/libopus.so
-          cp temp/ARM64/libopus.dll lib/zstd/win-arm64/native/libopus.dll
-          cp temp/ARM64/libopus.so lib/zstd/linux-arm64/native/libopus.so
-          cp temp/libopus.dylib lib/zstd/osx/native/libopus.dylib
+          mkdir lib/opus/win-x64/native
+          mkdir lib/opus/linux-x64/native
+          mkdir lib/opus/win-arm64/native
+          mkdir lib/opus/linux-arm64/native
+          mkdir lib/opus/osx/native
+          cp temp/x64/libopus.dll lib/opus/win-x64/native/libopus.dll
+          cp temp/x64/libopus.so lib/opus/linux-x64/native/libopus.so
+          cp temp/ARM64/libopus.dll lib/opus/win-arm64/native/libopus.dll
+          cp temp/ARM64/libopus.so lib/opus/linux-arm64/native/libopus.so
+          cp temp/libopus.dylib lib/opus/osx/native/libopus.dylib
 
       - name: Pack DSharpPlus.Natives.Opus
         shell: bash

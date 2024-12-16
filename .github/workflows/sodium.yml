@@ -93,6 +93,12 @@ jobs:
 
       - name: Move Artifacts
         run: |
+          mkdir lib/sodium/win-x64/native
+          mkdir lib/sodium/linux-x64/native
+          mkdir lib/sodium/osx-x64/native
+          mkdir lib/sodium/win-arm64/native
+          mkdir lib/sodium/linux-arm64/native
+          mkdir lib/sodium/osx-arm64/native
           cp temp/x64/libsodium.dll lib/zstd/win-x64/native/libsodium.dll
           cp temp/x64/libsodium.so lib/zstd/linux-x64/native/libsodium.so
           cp temp/x64/libsodium.dylib lib/zstd/osx-x64/native/libsodium.dylib
