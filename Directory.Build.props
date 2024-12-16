@@ -5,6 +5,9 @@
         <PackageIcon>dsharpplus.png</PackageIcon>
         <IsPackable>true</IsPackable>
         <UseArtifactsOutput>true</UseArtifactsOutput>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <RepositoryUrl>https://github.com/DSharpPlus/DSharpPlus.Natives</RepositoryUrl>
+        <RepositoryType>Git</RepositoryType>
     </PropertyGroup>
     <ItemGroup>
         <None Include="../icon/dsharpplus.png" Pack="true" PackagePath="" />
