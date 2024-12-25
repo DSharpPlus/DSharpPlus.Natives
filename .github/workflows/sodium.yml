@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build sodium
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     outputs:
       version: ${{ steps.print-version.outputs.version }}
@@ -32,45 +32,56 @@ jobs:
         run: |
           git fetch --tags 
           echo "version=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
-      
+
+      - name: Build sodium on Windows
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --includeRecommended --includeOptional"
+          foreach ($arch in "x64", "ARM64") {
+            New-Item -ItemType Directory -Name output/$arch
+            msbuild builds/msvc/vs2022/libsodium.sln /p:Configuration=DynRelease /p:Platform=$arch /t:Clean,Build # Clean between builds
+            cp bin/$arch/Release/v143/dynamic/libsodium.dll output/$arch/libsodium.dll # TODO: Figure out if we can detect the version part (v143) when it changes
+          }
+
       - name: Build sodium
+        if: matrix.os != 'windows-latest'
         shell: bash
         run: |
-          # TODO: Figure out how to build a "fat" dylib for macos, which can be used on x86_64 and aarch64 https://github.com/ziglang/zig/issues/9169
-          wget -nv https://ziglang.org/download/0.13.0/zig-linux-x86_64-0.13.0.tar.xz
-          tar -xf zig-linux-x86_64-0.13.0.tar.xz -C . --strip-components=1
-          mkdir -p output-{windows,linux,macos}/{x64,ARM64} # Keep x64 and ARM64 naming from zstd/opus workflows for consistency
-          for target in x86_64-windows x86_64-linux x86_64-macos aarch64-windows aarch64-linux aarch64-macos; do
-            # Docs use ReleaseFast instead of ReleaseSafe, so ill use it here as well
-            ./zig build -Doptimize=ReleaseFast -Dtarget=$target -p $target --summary all
-          done
-          cp x86_64-windows/bin/libsodium.dll output-windows/x64/libsodium.dll # No clue why for windows the output is in bin/ and not lib/
-          cp aarch64-windows/bin/libsodium.dll output-windows/ARM64/libsodium.dll
-          cp x86_64-linux/lib/libsodium.so output-linux/x64/libsodium.so
-          cp aarch64-linux/lib/libsodium.so output-linux/ARM64/libsodium.so
-          cp x86_64-macos/lib/libsodium.dylib output-macos/x64/libsodium.dylib
-          cp aarch64-macos/lib/libsodium.dylib output-macos/ARM64/libsodium.dylib
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            for arch in x64 ARM64; do
+              mkdir -p output/$arch
+              if [[ "$arch" == "ARM64" ]]; then
+                sudo apt update
+                sudo apt install cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+                ./configure --enable-static=off --host=aarch64-linux-gnu
+              else
+                ./configure --enable-static=off --host=x86_64-linux-gnu
+              fi
+              make -j4
+              cp src/libsodium/.libs/libsodium.so output/$arch/libsodium.so
+              make clean # Clean between builds
+            done
+          else
+            for arch in x64 ARM64; do
+              mkdir -p output/$arch
+              if [[ "$arch" == "ARM64" ]]; then
+                ./configure --enable-static=off --host=arm-apple-darwin
+              else
+                ./configure --enable-static=off --host=x86_64-apple-darwin
+              fi
+              make -j4
+              cp src/libsodium/.libs/libsodium.dylib output/$arch/libsodium.dylib
+              make clean # Clean between builds
+            done
+          fi
 
-      - name: Publish Artifacts for Windows
+      - name: Publish Artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: sodium-windows-latest # Keep naming for consistency 
-          path: output-windows
+          name: sodium-${{ matrix.os }} # Keep naming for consistency 
+          path: output
           compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
-
-      - name: Publish Artifacts for Linux
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: sodium-ubuntu-latest
-          path: output-linux
-          compression-level: 9
-
-      - name: Publish Artifacts for MacOS
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: sodium-macos-latest
-          path: output-macos
-          compression-level: 9
 
   publish-nuget:
     needs: build
