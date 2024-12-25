@@ -44,7 +44,7 @@ jobs:
         run: |
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --add Microsoft.VisualStudio.Component.VC.Tools.ARM64 --includeRecommended --includeOptional"
 
-      - name: setup-msbuild
+      - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
         if: matrix.os == 'windows-latest'
 
@@ -93,7 +93,7 @@ jobs:
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: sodium-${{ matrix.os }} # Keep naming for consistency 
+          name: sodium-${{ matrix.os }}
           path: output
           compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
 
