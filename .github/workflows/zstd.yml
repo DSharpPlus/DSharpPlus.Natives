@@ -27,18 +27,15 @@ jobs:
           repository: facebook/zstd
           submodules: recursive
 
-      # Disabled because 1.5.6 has an issue with MSVC which has not yet been fixed in a newer Tag, see https://github.com/facebook/zstd/pull/4019
-      #- name: Checkout latest Tag
-      #  shell: bash
-      #  run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
+      - name: Checkout latest Tag
+        shell: bash
+        run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
       
       # we do need the version though
       - name: Print Version
         id: print-version
         shell: bash
-        run: |
-          git fetch --tags 
-          echo "version=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
+        run: echo "version=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
       
       - name: Build zstd
         shell: bash
