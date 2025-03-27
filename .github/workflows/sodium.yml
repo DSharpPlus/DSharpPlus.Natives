@@ -28,7 +28,6 @@ jobs:
           submodules: recursive
 
       - name: Checkout latest Tag
-        id: print-version
         shell: bash
         run: |
           git fetch --tags
@@ -113,8 +112,11 @@ jobs:
         shell: bash
         run: |
           git fetch --tags
-          LATEST_TAG=$(git tag | grep -E ^[0-9]+.[0-9]+.[0-9]+$ | tail -1)
+          LATEST_TAG=$(git tag --sort=-v:refname | head -1)
           git checkout "$LATEST_TAG"
+          VERSION="${LATEST_TAG%-RELEASE}"
+          VERSION="${VERSION%-FINAL}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
         
       - name: Setup Alpine Linux for x64
         uses: jirutka/setup-alpine@v1
