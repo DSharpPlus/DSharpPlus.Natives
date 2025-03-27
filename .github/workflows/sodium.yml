@@ -28,6 +28,7 @@ jobs:
           submodules: recursive
 
       - name: Checkout latest Tag
+        id: print-version
         shell: bash
         run: |
           git fetch --tags
@@ -200,15 +201,15 @@ jobs:
           cp temp/ARM64/libsodium.dll lib/sodium/win-arm64/native/libsodium.dll
           cp temp/ARM64/libsodium.so lib/sodium/linux-arm64/native/libsodium.so
           cp temp/ARM64/libsodium.dylib lib/sodium/osx-arm64/native/libsodium.dylib
-          cp temp/x64/libsodium.musl.so lib/zstd/linux-musl-x64/native/libsodium.so
-          cp temp/ARM64/libsodium.musl.so lib/zstd/linux-musl-arm64/native/libsodium.so
+          cp temp/x64/libsodium.musl.so lib/sodium/linux-musl-x64/native/libsodium.so
+          cp temp/ARM64/libsodium.musl.so lib/sodium/linux-musl-arm64/native/libsodium.so
 
       - name: Pack DSharpPlus.Natives.Sodium
         shell: bash
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
-          VERSION=${{ needs.build.outputs.version }}
           VERSION="${VERSION%%-*}"
           dotnet pack ./build/DSharpPlus.Natives.Sodium.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
           dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
