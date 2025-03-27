@@ -29,16 +29,16 @@ jobs:
 
       - name: Checkout latest Tag
         shell: bash
-        run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
-      
-      # we do need the version though
-      - name: Print Version
-        id: print-version
-        shell: bash
-        run: echo "version=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
-      
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git tag | grep -E ^v[0-9]+.[0-9]+.[0-9]+$ | tail -1)
+          git checkout "$LATEST_TAG"
+          echo "version=$LATEST_TAG" >> $GITHUB_OUTPUT
+
       - name: Build zstd
         shell: bash
+        env:
+          COMMON_CMAKE_FLAGS: "-DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release"
         run: |
           cd build/cmake
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
@@ -46,7 +46,7 @@ jobs:
               mkdir -p ../../output/$arch
               mkdir build-$arch
               cd build-$arch
-              cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release -A $arch ..
+              cmake $COMMON_CMAKE_FLAGS -A $arch ..
               cmake --build . -j 4 --config Release
               cp lib/Release/zstd.dll ../../../output/$arch/libzstd.dll
               cd ..
@@ -59,9 +59,9 @@ jobs:
               if [[ "$arch" == "ARM64" ]]; then
                 sudo apt update
                 sudo apt install cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-                cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DCMAKE_BUILD_TYPE=Release ..
+                cmake $COMMON_CMAKE_FLAGS -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ ..
               else
-                cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release ..
+                cmake $COMMON_CMAKE_FLAGS ..
               fi
               cmake --build . -j 4
               cp lib/libzstd.so ../../../output/$arch/libzstd.so
@@ -70,7 +70,7 @@ jobs:
           elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
             mkdir build ../../output
             cd build
-            cmake -DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON "-DCMAKE_OSX_ARCHITECTURES=arm64;arm64e;x86_64;x86_64h" -DCMAKE_BUILD_TYPE=Release ..
+            cmake $COMMON_CMAKE_FLAGS "-DCMAKE_OSX_ARCHITECTURES=arm64;arm64e;x86_64;x86_64h" ..
             cmake --build . -j 4 --config Release
             cp lib/libzstd.dylib ../../../output/libzstd.dylib
             cd ..
@@ -119,8 +119,8 @@ jobs:
         shell: bash
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
-          VERSION=${{ needs.build.outputs.version }}
           VERSION="${VERSION:1}"
           dotnet pack ./build/DSharpPlus.Natives.Zstd.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
           dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
