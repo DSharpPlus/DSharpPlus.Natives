@@ -201,8 +201,8 @@ jobs:
           cp temp/ARM64/libsodium.dll lib/sodium/win-arm64/native/libsodium.dll
           cp temp/ARM64/libsodium.so lib/sodium/linux-arm64/native/libsodium.so
           cp temp/ARM64/libsodium.dylib lib/sodium/osx-arm64/native/libsodium.dylib
-          cp temp/x64/libsodium.musl.so lib/zstd/linux-musl-x64/native/libsodium.so
-          cp temp/ARM64/libsodium.musl.so lib/zstd/linux-musl-arm64/native/libsodium.so
+          cp temp/x64/libsodium.musl.so lib/sodium/linux-musl-x64/native/libsodium.so
+          cp temp/ARM64/libsodium.musl.so lib/sodium/linux-musl-arm64/native/libsodium.so
 
       - name: Pack DSharpPlus.Natives.Sodium
         shell: bash
