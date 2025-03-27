@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/zstd.yml'
 
+env:
+  COMMON_CMAKE_FLAGS: "-DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release"
+
 jobs:
   build:
     name: Build zstd
@@ -37,8 +40,6 @@ jobs:
 
       - name: Build zstd
         shell: bash
-        env:
-          COMMON_CMAKE_FLAGS: "-DZSTD_MULTITHREAD_SUPPORT=ON -DZSTD_LEGACY_SUPPORT=OFF -DZSTD_BUILD_PROGRAMS=OFF -DZSTD_BUILD_STATIC=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_BUILD_TYPE=Release"
         run: |
           cd build/cmake
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
@@ -80,6 +81,66 @@ jobs:
         uses: actions/upload-artifact@v4.4.3
         with:
           name: zstd-${{ matrix.os }}
+          path: output
+          compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
+
+  build-musl:
+    name: Build zstd on musl
+    runs-on: ubuntu-latest
+    
+    # We sadly cant use a matrix to run x64 and ARM64, because it would give use 2 artifacts
+    steps:
+      - name: Setup Alpine Linux for x64
+        uses: jirutka/setup-alpine@v1
+        with:
+          packages: >
+            build-base
+            cmake
+            git
+            make
+            gcc
+            g++
+
+      - name: Build zstd for x64 (musl)
+        shell: alpine.sh {0}
+        run: |
+          cd build/cmake
+          mkdir -p ../../output/x64
+          mkdir -p build-x64
+          cd build-x64
+          cmake $COMMON_CMAKE_FLAGS ..
+          cmake --build . -j 4
+          cp lib/libzstd.so ../../../output/x64/libzstd.so
+          cd ..
+      
+      - name: Setup Alpine Linux for ARM64
+        uses: jirutka/setup-alpine@v1
+        with:
+          arch: aarch64
+          packages: >
+            build-base
+            cmake
+            git
+            make
+            gcc
+            g++
+  
+      - name: Build zstd for ARM64 (musl)
+        shell: alpine.sh {0}
+        run: |
+          cd build/cmake
+          mkdir -p ../../output/ARM64
+          mkdir -p build-ARM64
+          cd build-ARM64
+          cmake $COMMON_CMAKE_FLAGS ..
+          cmake --build . -j 4
+          cp lib/libzstd.so ../../../output/ARM64/libzstd.so
+          cd ..
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: zstd-ubuntu-latest-musl
           path: output
           compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
 
