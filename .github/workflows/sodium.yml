@@ -28,6 +28,7 @@ jobs:
           submodules: recursive
 
       - name: Checkout latest Tag
+        id: print-version
         shell: bash
         run: |
           git fetch --tags
@@ -207,8 +208,8 @@ jobs:
         shell: bash
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          VERSION: ${{ needs.build.outputs.version }}
         run: |
-          VERSION=${{ needs.build.outputs.version }}
           VERSION="${VERSION%%-*}"
           dotnet pack ./build/DSharpPlus.Natives.Sodium.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
           dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
