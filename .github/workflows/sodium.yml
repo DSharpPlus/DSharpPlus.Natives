@@ -29,14 +29,13 @@ jobs:
 
       - name: Checkout latest Tag
         shell: bash
-        run: git fetch --tags && git checkout "$(git describe --tags "$(git rev-list --tags --max-count=1)")"
-
-      - name: Print Version
-        id: print-version
-        shell: bash
         run: |
-          git fetch --tags 
-          echo "version=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_OUTPUT
+          git fetch --tags
+          LATEST_TAG=$(git tag --sort=-v:refname | head -1)
+          git checkout "$LATEST_TAG"
+          VERSION="${LATEST_TAG%-RELEASE}"
+          VERSION="${VERSION%-FINAL}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Install Visual Studio 2022 Build Tools
         if: matrix.os == 'windows-latest'
@@ -97,8 +96,77 @@ jobs:
           path: output
           compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
 
+  build-musl:
+    name: Build sodium (alpine-musl)
+    runs-on: ubuntu-latest
+            
+    # We sadly cant use a matrix to run x64 and ARM64, because it would give use 2 artifacts
+    steps:
+      - name: Clone sodium repo
+        uses: actions/checkout@v4.2.2
+        with:
+          repository: jedisct1/libsodium
+          submodules: recursive
+        
+      - name: Checkout latest Tag
+        shell: bash
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git tag --sort=-v:refname | head -1)
+          git checkout "$LATEST_TAG"
+          VERSION="${LATEST_TAG%-RELEASE}"
+          VERSION="${VERSION%-FINAL}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        
+      - name: Setup Alpine Linux for x64
+        uses: jirutka/setup-alpine@v1
+        with:
+          packages: >
+            build-base
+            cmake
+            git
+            make
+            gcc
+            g++
+        
+      - name: Build sodium for x64 (musl)
+        shell: alpine.sh {0}
+        run: |
+          mkdir -p output/x64
+          ./configure --enable-static=off
+          make -j4
+          cp src/libsodium/.libs/libsodium.so output/x64/libsodium.musl.so
+          make clean # Clean between builds
+              
+      - name: Setup Alpine Linux for ARM64
+        uses: jirutka/setup-alpine@v1
+        with:
+          arch: aarch64
+          packages: >
+            build-base
+            cmake
+            git
+            make
+            gcc
+            g++
+          
+      - name: Build sodium for ARM64 (musl)
+        shell: alpine.sh {0}
+        run: |
+          mkdir -p output/ARM64
+          ./configure --enable-static=off
+          make -j4
+          cp src/libsodium/.libs/libsodium.so output/ARM64/libsodium.musl.so
+        
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4.4.3
+        with:
+          name: sodium-alpine-latest
+          path: output
+          compression-level: 9 # Prefer smaller downloads over a shorter workflow runtime
+        
   publish-nuget:
-    needs: build
+    needs: [build, build-musl]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout CSPROJ files
@@ -124,12 +192,16 @@ jobs:
           mkdir -p lib/sodium/win-arm64/native
           mkdir -p lib/sodium/linux-arm64/native
           mkdir -p lib/sodium/osx-arm64/native
+          mkdir -p lib/sodium/linux-musl-x64/native
+          mkdir -p lib/sodium/linux-musl-arm64/native
           cp temp/x64/libsodium.dll lib/sodium/win-x64/native/libsodium.dll
           cp temp/x64/libsodium.so lib/sodium/linux-x64/native/libsodium.so
           cp temp/x64/libsodium.dylib lib/sodium/osx-x64/native/libsodium.dylib
           cp temp/ARM64/libsodium.dll lib/sodium/win-arm64/native/libsodium.dll
           cp temp/ARM64/libsodium.so lib/sodium/linux-arm64/native/libsodium.so
           cp temp/ARM64/libsodium.dylib lib/sodium/osx-arm64/native/libsodium.dylib
+          cp temp/x64/libsodium.musl.so lib/zstd/linux-musl-x64/native/libsodium.so
+          cp temp/ARM64/libsodium.musl.so lib/zstd/linux-musl-arm64/native/libsodium.so
 
       - name: Pack DSharpPlus.Natives.Sodium
         shell: bash
