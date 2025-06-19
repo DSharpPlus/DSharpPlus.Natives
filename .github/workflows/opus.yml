@@ -27,7 +27,7 @@ jobs:
       - name: Clone opus repo
         uses: actions/checkout@v4.2.2
         with:
-          repository: xiph/opus
+          repository: DSharpPlus/opus
           submodules: recursive
 
       - name: Checkout latest Tag
