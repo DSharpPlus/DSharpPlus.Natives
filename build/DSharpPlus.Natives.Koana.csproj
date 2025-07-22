@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Provides the dynamic library files for koana.</Description>
+    <PackageTags>discord, discord-bot, discord-api, dsharpplus, koana, dsharpplus-voice</PackageTags>
+    <Authors>DPP contributors</Authors>
+    <IsPackable>true</IsPackable>
+    <PackageLicenseFile>koana-license.txt</PackageLicenseFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="../lib/koana/**/*" Pack="true" PackagePath="runtimes" />
+    <None Include="../licenses/koana-license.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>
