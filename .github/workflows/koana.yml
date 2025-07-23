@@ -275,7 +275,7 @@ jobs:
 
       - name: Rename native
         shell: bash
-        run: mv build/libkoana.dylib build/libkoana-macos-arm64.dylib
+        run: mv build/libkoana.dylib build/libkoana-osx-arm64.dylib
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
