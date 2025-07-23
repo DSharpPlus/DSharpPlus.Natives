@@ -46,8 +46,7 @@ jobs:
           cd openssl
           git checkout openssl-3.5.0
           $env:PATH += ";C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64A
-          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend
+          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend no-shared VC-WIN64A
           nmake
           
       - name: Build koana
@@ -92,8 +91,7 @@ jobs:
           cd openssl
           git checkout openssl-3.5.0
           $env:PATH += ";C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure VC-WIN64-ARM
-          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend
+          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend no-shared VC-WIN64-ARM
           nmake
           
       - name: Build koana
@@ -132,13 +130,13 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          ./Configure linux-x86_64
+          ./Configure no-makedepend linux-x86_64
           make -j4
           
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
           cmake --build build --parallel
 
       - name: Rename native
@@ -174,13 +172,13 @@ jobs:
           export CC=aarch64-linux-gnu-gcc
           export CXX=aarch64-linux-gnu-g++
           export AR=aarch64-linux-gnu-ar
-          ./Configure linux-aarch64
+          ./Configure no-makedepend linux-aarch64
           make -j4
           
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
           cmake --build build --parallel
 
       - name: Rename native
@@ -212,7 +210,7 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          ./Configure darwin64-x86_64-cc
+          ./Configure no-makedepend no-shared darwin64-x86_64-cc
           make -j4
           
       - name: Build koana
@@ -250,7 +248,7 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          ./Configure darwin64-arm64-cc
+          ./Configure no-makedepend no-shared darwin64-arm64-cc
           make -j4
           
       - name: Build koana
@@ -297,13 +295,13 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          ./Configure linux-x86_64
+          ./Configure no-makedepend linux-x86_64
           make -j4
           
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
           cmake --build build --parallel
 
       - name: Rename native
@@ -345,13 +343,13 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          ./Configure linux-aarch64
+          ./Configure no-makedepend linux-aarch64
           make -j4
           
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
           cmake --build build --parallel
       
       - name: Rename native
