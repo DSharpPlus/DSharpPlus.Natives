@@ -55,7 +55,7 @@ jobs:
           cd openssl
           git checkout openssl-3.5.0
           $env:PATH += ";C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend no-shared VC-WIN64A
+          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64A
           nmake
           
       - name: Build koana
@@ -102,7 +102,7 @@ jobs:
           cd openssl
           git checkout openssl-3.5.0
           $env:PATH += ";C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend no-shared VC-WIN64-ARM
+          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64-ARM
           nmake
           
       - name: Build koana
