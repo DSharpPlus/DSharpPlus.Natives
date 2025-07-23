@@ -75,7 +75,7 @@ jobs:
           path: build/Release/koana-win-x64.dll
 
   build-windows-arm64:
-    runs-on: windows-latest
+    runs-on: windows-11-arm
     needs: version
     steps:
       - name: Clone koana repo
@@ -163,7 +163,7 @@ jobs:
           path: build/libkoana-linux-x64.so
 
   build-linux-arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs: version
     steps:
       - name: Clone koana repo
@@ -176,7 +176,7 @@ jobs:
         shell: bash
         run: |
           sudo apt update
-          sudo apt install cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libssl-dev
+          sudo apt install cmake
           
       - name: Build openssl
         shell: bash
@@ -184,16 +184,13 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          export CC=aarch64-linux-gnu-gcc
-          export CXX=aarch64-linux-gnu-g++
-          export AR=aarch64-linux-gnu-ar
           ./Configure no-makedepend linux-aarch64
           make -j4
           
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
           cmake --build build --parallel
 
       - name: Rename native
@@ -336,7 +333,7 @@ jobs:
           path: build/libkoana-musl-x64.so
 
   build-musl-arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs: version
     steps:
       - name: Clone koana repo
