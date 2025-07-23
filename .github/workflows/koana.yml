@@ -87,7 +87,7 @@ jobs:
       - name: Setup VS build tools
         uses: seanmiddleditch/gha-setup-vsdevenv@v5
         with:
-          host_arch: amd64
+          host_arch: arm64
           arch: arm64
           
       - name: Install nasm
