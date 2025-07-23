@@ -11,8 +11,13 @@ jobs:
   version:
     runs-on: ubuntu-latest
     outputs:
-      version: $
+      version: ${{ steps.print-version.outputs.version }}
     steps:
+      - name: Clone koana repo
+        uses: actions/checkout@v4
+        with:
+          repository: DSharpPlus/libkoana
+          
       - name: Print version
         id: print-version
         shell: bash
@@ -50,7 +55,7 @@ jobs:
           cd openssl
           git checkout openssl-3.5.0
           $env:PATH += ";C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend no-shared VC-WIN64A
+          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64A
           nmake
           
       - name: Build koana
@@ -70,7 +75,7 @@ jobs:
           path: build/Release/koana-win-x64.dll
 
   build-windows-arm64:
-    runs-on: windows-latest
+    runs-on: windows-11-arm
     needs: version
     steps:
       - name: Clone koana repo
@@ -82,7 +87,7 @@ jobs:
       - name: Setup VS build tools
         uses: seanmiddleditch/gha-setup-vsdevenv@v5
         with:
-          host_arch: amd64
+          host_arch: arm64
           arch: arm64
           
       - name: Install nasm
@@ -97,7 +102,7 @@ jobs:
           cd openssl
           git checkout openssl-3.5.0
           $env:PATH += ";C:\Program Files\NASM"
-          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend no-shared VC-WIN64-ARM
+          C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64-ARM
           nmake
           
       - name: Build koana
@@ -158,7 +163,7 @@ jobs:
           path: build/libkoana-linux-x64.so
 
   build-linux-arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs: version
     steps:
       - name: Clone koana repo
@@ -171,7 +176,7 @@ jobs:
         shell: bash
         run: |
           sudo apt update
-          sudo apt install cmake gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libssl-dev
+          sudo apt install cmake
           
       - name: Build openssl
         shell: bash
@@ -179,16 +184,13 @@ jobs:
           git clone https://github.com/openssl/openssl
           cd openssl
           git checkout openssl-3.5.0
-          export CC=aarch64-linux-gnu-gcc
-          export CXX=aarch64-linux-gnu-g++
-          export AR=aarch64-linux-gnu-ar
           ./Configure no-makedepend linux-aarch64
           make -j4
           
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=aarch64-linux-gnu-gcc -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++ -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
           cmake --build build --parallel
 
       - name: Rename native
@@ -228,7 +230,7 @@ jobs:
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto.a" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl.a" -DOPENSSL_INCLUDE_DIR=".\openssl\include\" -DCMAKE_OSX_ARCHITECTURES=x86_64
+          cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=x86_64
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -268,12 +270,12 @@ jobs:
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto.a" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl.a" -DOPENSSL_INCLUDE_DIR=".\openssl\include\" -DCMAKE_OSX_ARCHITECTURES=arm64
+          cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=arm64
           cmake --build build --config Release --parallel
 
       - name: Rename native
         shell: bash
-        run: mv build/libkoana.dylib build/libkoana-macos-arm64.dylib
+        run: mv build/libkoana.dylib build/libkoana-osx-arm64.dylib
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
