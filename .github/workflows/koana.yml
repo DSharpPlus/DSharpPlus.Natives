@@ -420,12 +420,12 @@ jobs:
           cp temp/libkoana-musl-x64.so lib/koana/linux-musl-x64/native/libkoana.so
           cp temp/libkoana-musl-arm64.so lib/koana/linux-musl-arm64/native/libkoana.so
 
-      - name: Pack DSharpPlus.Natives.Opus
+      - name: Pack DSharpPlus.Natives.Koana
         shell: bash
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
           VERSION: ${{ needs.version.outputs.version }}
         run: |
           VERSION="${VERSION:1}"
-          dotnet pack ./build/DSharpPlus.Natives.Opus.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
+          dotnet pack ./build/DSharpPlus.Natives.Koana.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
           dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
