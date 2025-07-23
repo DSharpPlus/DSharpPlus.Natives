@@ -233,7 +233,7 @@ jobs:
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto.a" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl.a" -DOPENSSL_INCLUDE_DIR=".\openssl\include\" -DCMAKE_OSX_ARCHITECTURES=x86_64
+          cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=x86_64
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -273,7 +273,7 @@ jobs:
       - name: Build koana
         shell: bash
         run: |
-          cmake -B build -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto.a" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl.a" -DOPENSSL_INCLUDE_DIR=".\openssl\include\" -DCMAKE_OSX_ARCHITECTURES=arm64
+          cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=arm64
           cmake --build build --config Release --parallel
 
       - name: Rename native
