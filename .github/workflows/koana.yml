@@ -11,8 +11,13 @@ jobs:
   version:
     runs-on: ubuntu-latest
     outputs:
-      version: $
+      version: ${{ steps.print-version.outputs.version }}
     steps:
+      - name: Clone koana repo
+        uses: actions/checkout@v4
+        with:
+          repository: DSharpPlus/libkoana
+          
       - name: Print version
         id: print-version
         shell: bash
