@@ -61,7 +61,7 @@ jobs:
       - name: Build koana
         shell: pwsh
         run: |
-          cmake -B build -A x64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
+          cmake -B build -A x64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto_static.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl_static.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -108,7 +108,7 @@ jobs:
       - name: Build koana
         shell: pwsh
         run: |
-          cmake -B build -A ARM64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
+          cmake -B build -A ARM64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto_static.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl_static.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
           cmake --build build --config Release --parallel
 
       - name: Rename native
