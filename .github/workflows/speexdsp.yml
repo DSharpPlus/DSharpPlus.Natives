@@ -134,6 +134,9 @@ jobs:
       - name: Build speexdsp
         shell: bash
         run: |
+          ls -lah
+          ls -lah ..
+          ls -lah build
           cp build/SpeexDSP_CMakeLists.txt CMakeLists.txt
           cmake -B build -DSPEEX_USE_SSE
           cmake --build build --config Release --parallel
