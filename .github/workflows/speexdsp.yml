@@ -276,6 +276,7 @@ jobs:
             g++
             nasm
             linux-headers
+            autoconf
           
       - name: Build speexdsp
         shell: alpine.sh {0}
@@ -316,6 +317,7 @@ jobs:
             g++
             nasm
             linux-headers
+            autoconf
 
       - name: Build speexdsp
         shell: alpine.sh {0}
