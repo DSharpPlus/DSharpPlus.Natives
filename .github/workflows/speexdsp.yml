@@ -137,6 +137,9 @@ jobs:
           ./autogen.sh
           CFLAGS="-march=x86-64-v2" ./configure --disable-maintainer-mode --enable-shared --enable-sse --disable-examples
           make -j4
+          pwd
+          ls
+          find . -name *.so
 
       - name: Rename native
         shell: bash
