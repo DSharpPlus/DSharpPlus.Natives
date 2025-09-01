@@ -140,7 +140,7 @@ jobs:
         shell: bash
         run: |
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_SSE
+          cmake -B build -DSPEEX_USE_SSE=ON
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -172,7 +172,7 @@ jobs:
         shell: bash
         run: |
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_NEON
+          cmake -B build -DSPEEX_USE_NEON=ON
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -297,7 +297,7 @@ jobs:
         shell: alpine.sh {0}
         run: |
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_SSE
+          cmake -B build -DSPEEX_USE_SSE=ON
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -343,7 +343,7 @@ jobs:
         shell: alpine.sh {0}
         run: |
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_NEON
+          cmake -B build -DSPEEX_USE_NEON=ON
           cmake --build build --config Release --parallel
       
       - name: Rename native
