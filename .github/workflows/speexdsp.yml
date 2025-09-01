@@ -255,104 +255,84 @@ jobs:
   #         name: koana-macos-arm64
   #         path: build/libkoana-osx-arm64.dylib
 
-  # build-musl-x64:
-  #   runs-on: ubuntu-latest
-  #   needs: version
-  #   steps:
-  #     - name: Clone speexdsp repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: xiph/speexdsp
-  #         ref: ${{needs.version.outputs.version}}
+  build-musl-x64:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
           
-  #     - name: Setup Alpine Linux
-  #       uses: jirutka/setup-alpine@v1
-  #       with:
-  #         packages: >
-  #           build-base
-  #           cmake
-  #           git
-  #           make
-  #           gcc
-  #           g++
-  #           nasm
-  #           perl
-  #           linux-headers
+      - name: Setup Alpine Linux
+        uses: jirutka/setup-alpine@v1
+        with:
+          packages: >
+            build-base
+            git
+            make
+            gcc
+            g++
+            nasm
+            linux-headers
           
-  #     - name: Build openssl
-  #       shell: alpine.sh {0}
-  #       run: |
-  #         git clone https://github.com/openssl/openssl
-  #         cd openssl
-  #         git checkout openssl-3.5.0
-  #         ./Configure no-makedepend linux-x86_64
-  #         make -j4
-          
-  #     - name: Build koana
-  #       shell: alpine.sh {0}
-  #       run: |
-  #         cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
-  #         cmake --build build --parallel
+      - name: Build speexdsp
+        shell: alpine.sh {0}
+        run: |
+          ./autogen.sh
+          CFLAGS="-march=x86-64-v2" ./configure --disable-maintainer-mode --enable-shared --enable-sse --disable-examples
+          make -j4
 
-  #     - name: Rename native
-  #       shell: bash
-  #       run: mv build/libkoana.so build/libkoana-musl-x64.so
+      - name: Rename native
+        shell: bash
+        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-musl-x64.so
           
-  #     - name: Publish Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: koana-musl-x64
-  #         path: build/libkoana-musl-x64.so
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speexdsp-musl-x64
+          path: libspeexdsp/.libs/libspeexdsp-musl-x64.so
 
-  # build-musl-arm64:
-  #   runs-on: ubuntu-latest
-  #   needs: version
-  #   steps:
-  #     - name: Clone speexdsp repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: xiph/speexdsp
-  #         ref: ${{needs.version.outputs.version}}
+  build-musl-arm64:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
           
-  #     - name: Setup Alpine Linux
-  #       uses: jirutka/setup-alpine@v1
-  #       with:
-  #         arch: aarch64
-  #         packages: >
-  #           build-base
-  #           cmake
-  #           git
-  #           make
-  #           gcc
-  #           g++
-  #           nasm
-  #           perl
-  #           linux-headers
-          
-  #     - name: Build openssl
-  #       shell: alpine.sh {0}
-  #       run: |
-  #         git clone https://github.com/openssl/openssl
-  #         cd openssl
-  #         git checkout openssl-3.5.0
-  #         ./Configure no-makedepend linux-aarch64
-  #         make -j4
-          
-  #     - name: Build koana
-  #       shell: alpine.sh {0}
-  #       run: |
-  #         cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
-  #         cmake --build build --parallel
+      - name: Setup Alpine Linux
+        uses: jirutka/setup-alpine@v1
+        with:
+          arch: aarch64
+          packages: >
+            build-base
+            git
+            make
+            gcc
+            g++
+            nasm
+            linux-headers
+
+      - name: Build speexdsp
+        shell: alpine.sh {0}
+        run: |
+          ./autogen.sh
+          CFLAGS="-march=armv8-a" ./configure --disable-maintainer-mode --enable-shared --enable-neon --disable-examples
+          make -j4
       
-  #     - name: Rename native
-  #       shell: bash
-  #       run: mv build/libkoana.so build/libkoana-musl-arm64.so
+      - name: Rename native
+        shell: bash
+        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-musl-arm64.so
           
-  #     - name: Publish Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: koana-musl-arm64
-  #         path: build/libkoana-musl-arm64.so
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speexdsp-musl-arm64
+          path: libspeexdsp/.libs/libspeexdsp-musl-arm64.so
 
   # publish-nuget:
   #   runs-on: ubuntu-latest
