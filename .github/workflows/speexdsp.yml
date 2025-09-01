@@ -134,19 +134,19 @@ jobs:
       - name: Build speexdsp
         shell: bash
         run: |
-          ./autogen.sh
-          CFLAGS="-march=x86-64-v2" ./configure --disable-maintainer-mode --enable-shared --enable-sse --disable-examples
-          make -j4
+          cp build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -DSPEEX_USE_SSE
+          cmake --build build --config Release --parallel
 
       - name: Rename native
         shell: bash
-        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-linux-x64.so
+        run: mv build/libspeexdsp.so build/libspeexdsp-linux-x64.so
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: speexdsp-linux-x64
-          path: libspeexdsp/.libs/libspeexdsp-linux-x64.so
+          path: build/libspeexdsp-linux-x64.so
 
   build-linux-arm64:
     runs-on: ubuntu-24.04-arm
@@ -161,19 +161,19 @@ jobs:
       - name: Build koana
         shell: bash
         run: |
-          ./autogen.sh
-          CFLAGS="-march=armv8-a" ./configure --disable-maintainer-mode --enable-shared --enable-neon --disable-examples
-          make -j4
+          cp build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -DSPEEX_USE_NEON
+          cmake --build build --config Release --parallel
 
       - name: Rename native
         shell: bash
-        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-linux-arm64.so
+        run: mv build/libspeexdsp.so build/libspeexdsp-linux-arm64.so
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: speexdsp-linux-arm64
-          path: libspeexdsp/.libs/libspeexdsp-linux-arm64.so
+          path: build/libspeexdsp-linux-arm64.so
 
   # build-macos-x64:
   #   runs-on: macos-latest
@@ -270,32 +270,30 @@ jobs:
         with:
           packages: >
             build-base
+            cmake
             git
             make
             gcc
             g++
             nasm
             linux-headers
-            autoconf
-            automake
-            libtool
           
       - name: Build speexdsp
         shell: alpine.sh {0}
         run: |
-          ./autogen.sh
-          CFLAGS="-march=x86-64-v2" ./configure --disable-maintainer-mode --enable-shared --enable-sse --disable-examples
-          make -j4
+          cp build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -DSPEEX_USE_SSE
+          cmake --build build --config Release --parallel
 
       - name: Rename native
         shell: bash
-        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-musl-x64.so
+        run: mv build/libspeexdsp.so build/libspeexdsp-musl-x64.so
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: speexdsp-musl-x64
-          path: libspeexdsp/.libs/libspeexdsp-musl-x64.so
+          path: build/libspeexdsp-musl-x64.so
 
   build-musl-arm64:
     runs-on: ubuntu-latest
@@ -313,32 +311,30 @@ jobs:
           arch: aarch64
           packages: >
             build-base
+            cmake
             git
             make
             gcc
             g++
             nasm
             linux-headers
-            autoconf
-            automake
-            libtool
 
       - name: Build speexdsp
         shell: alpine.sh {0}
         run: |
-          ./autogen.sh
-          CFLAGS="-march=armv8-a" ./configure --disable-maintainer-mode --enable-shared --enable-neon --disable-examples
-          make -j4
+          cp build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -DSPEEX_USE_NEON
+          cmake --build build --config Release --parallel
       
       - name: Rename native
         shell: bash
-        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-musl-arm64.so
+        run: mv build/libspeexdsp.so build/libspeexdsp-musl-arm64.so
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: speexdsp-musl-arm64
-          path: libspeexdsp/.libs/libspeexdsp-musl-arm64.so
+          path: build/libspeexdsp-musl-arm64.so
 
   # publish-nuget:
   #   runs-on: ubuntu-latest
