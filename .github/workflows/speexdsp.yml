@@ -1,0 +1,403 @@
+name: Build speexdsp
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/speexdsp.yml'
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.print-version.outputs.version }}
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          
+      - name: Print version
+        id: print-version
+        shell: bash
+        run: |
+          git fetch --tags
+          LATEST_TAG=$(git tag | grep -E ^SpeexDSP-[0-9]+.[0-9]+.[0-9]+$ | tail -1)
+          git checkout "$LATEST_TAG"
+          echo "version=$LATEST_TAG" >> $GITHUB_OUTPUT
+
+  # build-windows-x64:
+  #   runs-on: windows-latest
+  #   needs: version
+  #   steps:
+  #     - name: Clone speexdsp repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: xiph/speexdsp
+  #         ref: ${{needs.version.outputs.version}}
+
+  #     - name: Setup VS build tools
+  #       uses: seanmiddleditch/gha-setup-vsdevenv@v5
+  #       with:
+  #         host_arch: amd64
+  #         arch: amd64
+          
+  #     - name: Install nasm
+  #       shell: pwsh
+  #       run: |
+  #         choco install nasm
+          
+  #     - name: Build openssl
+  #       shell: pwsh
+  #       run: |
+  #         git clone https://github.com/openssl/openssl
+  #         cd openssl
+  #         git checkout openssl-3.5.0
+  #         $env:PATH += ";C:\Program Files\NASM"
+  #         C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64A
+  #         nmake
+          
+  #     - name: Build koana
+  #       shell: pwsh
+  #       run: |
+  #         cmake -B build -A x64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto_static.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl_static.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
+  #         cmake --build build --config Release --parallel
+
+  #     - name: Rename native
+  #       shell: bash
+  #       run: mv build/Release/koana.dll build/Release/koana-win-x64.dll
+          
+  #     - name: Publish Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: koana-windows-x64
+  #         path: build/Release/koana-win-x64.dll
+
+  # build-windows-arm64:
+  #   runs-on: windows-11-arm
+  #   needs: version
+  #   steps:
+  #     - name: Clone speexdsp repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: xiph/speexdsp
+  #         ref: ${{needs.version.outputs.version}}
+
+  #     - name: Setup VS build tools
+  #       uses: seanmiddleditch/gha-setup-vsdevenv@v5
+  #       with:
+  #         host_arch: arm64
+  #         arch: arm64
+          
+  #     - name: Install nasm
+  #       shell: pwsh
+  #       run: |
+  #         choco install nasm
+          
+  #     - name: Build openssl
+  #       shell: pwsh
+  #       run: |
+  #         git clone https://github.com/openssl/openssl
+  #         cd openssl
+  #         git checkout openssl-3.5.0
+  #         $env:PATH += ";C:\Program Files\NASM"
+  #         C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64-ARM
+  #         nmake
+          
+  #     - name: Build koana
+  #       shell: pwsh
+  #       run: |
+  #         cmake -B build -A ARM64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto_static.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl_static.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
+  #         cmake --build build --config Release --parallel
+
+  #     - name: Rename native
+  #       shell: bash
+  #       run: mv build/Release/koana.dll build/Release/koana-win-arm64.dll
+          
+  #     - name: Publish Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: koana-windows-arm64
+  #         path: build/Release/koana-win-arm64.dll
+
+  build-linux-x64:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
+          
+      - name: Build speexdsp
+        shell: bash
+        run: |
+          ./autogen.sh
+          CFLAGS="-march=x86-64-v2" ./configure --disable-maintainer-mode --enable-shared --enable-sse --disable-examples
+          make -j4
+
+      - name: Rename native
+        shell: bash
+        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp-linux-x64.so
+          
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speexdsp-linux-x64
+          path: libspeexdsp-linux-x64.so
+
+  build-linux-arm64:
+    runs-on: ubuntu-24.04-arm
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
+          
+      - name: Build koana
+        shell: bash
+        run: |
+          ./autogen.sh
+          CFLAGS="-march=armv8-a" ./configure --disable-maintainer-mode --enable-shared --enable-neon --disable-examples
+          make -j4
+
+      - name: Rename native
+        shell: bash
+        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp-linux-arm64.so
+          
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speexdsp-linux-arm64
+          path: libspeexdsp-linux-arm64.so
+
+  # build-macos-x64:
+  #   runs-on: macos-latest
+  #   needs: version
+  #   steps:
+  #     - name: Clone speexdsp repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: xiph/speexdsp
+  #         ref: ${{needs.version.outputs.version}}
+          
+  #     - name: Install nasm
+  #       shell: bash
+  #       run: |
+  #         brew install nasm
+          
+  #     - name: Build openssl
+  #       shell: bash
+  #       run: |
+  #         git clone https://github.com/openssl/openssl
+  #         cd openssl
+  #         git checkout openssl-3.5.0
+  #         ./Configure no-makedepend no-shared darwin64-x86_64-cc
+  #         make -j4
+          
+  #     - name: Build koana
+  #       shell: bash
+  #       run: |
+  #         cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=x86_64
+  #         cmake --build build --config Release --parallel
+
+  #     - name: Rename native
+  #       shell: bash
+  #       run: mv build/libkoana.dylib build/libkoana-osx-x64.dylib
+          
+  #     - name: Publish Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: koana-macos-x64
+  #         path: build/libkoana-osx-x64.dylib
+
+  # build-macos-arm64:
+  #   runs-on: macos-latest
+  #   needs: version
+  #   steps:
+  #     - name: Clone speexdsp repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: xiph/speexdsp
+  #         ref: ${{needs.version.outputs.version}}
+          
+  #     - name: Install nasm
+  #       shell: bash
+  #       run: |
+  #         brew install nasm
+          
+  #     - name: Build openssl
+  #       shell: bash
+  #       run: |
+  #         git clone https://github.com/openssl/openssl
+  #         cd openssl
+  #         git checkout openssl-3.5.0
+  #         ./Configure no-makedepend no-shared darwin64-arm64-cc
+  #         make -j4
+          
+  #     - name: Build koana
+  #       shell: bash
+  #       run: |
+  #         cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=arm64
+  #         cmake --build build --config Release --parallel
+
+  #     - name: Rename native
+  #       shell: bash
+  #       run: mv build/libkoana.dylib build/libkoana-osx-arm64.dylib
+          
+  #     - name: Publish Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: koana-macos-arm64
+  #         path: build/libkoana-osx-arm64.dylib
+
+  # build-musl-x64:
+  #   runs-on: ubuntu-latest
+  #   needs: version
+  #   steps:
+  #     - name: Clone speexdsp repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: xiph/speexdsp
+  #         ref: ${{needs.version.outputs.version}}
+          
+  #     - name: Setup Alpine Linux
+  #       uses: jirutka/setup-alpine@v1
+  #       with:
+  #         packages: >
+  #           build-base
+  #           cmake
+  #           git
+  #           make
+  #           gcc
+  #           g++
+  #           nasm
+  #           perl
+  #           linux-headers
+          
+  #     - name: Build openssl
+  #       shell: alpine.sh {0}
+  #       run: |
+  #         git clone https://github.com/openssl/openssl
+  #         cd openssl
+  #         git checkout openssl-3.5.0
+  #         ./Configure no-makedepend linux-x86_64
+  #         make -j4
+          
+  #     - name: Build koana
+  #       shell: alpine.sh {0}
+  #       run: |
+  #         cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+  #         cmake --build build --parallel
+
+  #     - name: Rename native
+  #       shell: bash
+  #       run: mv build/libkoana.so build/libkoana-musl-x64.so
+          
+  #     - name: Publish Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: koana-musl-x64
+  #         path: build/libkoana-musl-x64.so
+
+  # build-musl-arm64:
+  #   runs-on: ubuntu-latest
+  #   needs: version
+  #   steps:
+  #     - name: Clone speexdsp repo
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: xiph/speexdsp
+  #         ref: ${{needs.version.outputs.version}}
+          
+  #     - name: Setup Alpine Linux
+  #       uses: jirutka/setup-alpine@v1
+  #       with:
+  #         arch: aarch64
+  #         packages: >
+  #           build-base
+  #           cmake
+  #           git
+  #           make
+  #           gcc
+  #           g++
+  #           nasm
+  #           perl
+  #           linux-headers
+          
+  #     - name: Build openssl
+  #       shell: alpine.sh {0}
+  #       run: |
+  #         git clone https://github.com/openssl/openssl
+  #         cd openssl
+  #         git checkout openssl-3.5.0
+  #         ./Configure no-makedepend linux-aarch64
+  #         make -j4
+          
+  #     - name: Build koana
+  #       shell: alpine.sh {0}
+  #       run: |
+  #         cmake -B build -DCMAKE_BUILD_TYPE=Release -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.so" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.so" -DOPENSSL_INCLUDE_DIR="./openssl/include/"
+  #         cmake --build build --parallel
+      
+  #     - name: Rename native
+  #       shell: bash
+  #       run: mv build/libkoana.so build/libkoana-musl-arm64.so
+          
+  #     - name: Publish Artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: koana-musl-arm64
+  #         path: build/libkoana-musl-arm64.so
+
+  # publish-nuget:
+  #   runs-on: ubuntu-latest
+  #   needs: [version, build-windows-x64, build-windows-arm64, build-linux-x64, build-linux-arm64, build-macos-x64, build-macos-arm64, build-musl-x64, build-musl-arm64]
+  #   steps:
+  #     - name: Checkout CSPROJ files
+  #       uses: actions/checkout@v4.2.2
+
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v4
+  #       with:
+  #         dotnet-version: 9
+
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         path: temp
+  #         pattern: koana-*
+  #         merge-multiple: true
+
+  #     - name: Move Artifacts
+  #       run: |
+  #         mkdir -p lib/koana/win-x64/native
+  #         mkdir -p lib/koana/linux-x64/native
+  #         mkdir -p lib/koana/win-arm64/native
+  #         mkdir -p lib/koana/linux-arm64/native
+  #         mkdir -p lib/koana/osx-x64/native
+  #         mkdir -p lib/koana/osx-arm64/native
+  #         mkdir -p lib/koana/linux-musl-x64/native
+  #         mkdir -p lib/koana/linux-musl-arm64/native
+  #         cp temp/koana-win-x64.dll lib/koana/win-x64/native/koana.dll
+  #         cp temp/libkoana-linux-x64.so lib/koana/linux-x64/native/libkoana.so
+  #         cp temp/koana-win-arm64.dll lib/koana/win-arm64/native/koana.dll
+  #         cp temp/libkoana-linux-arm64.so lib/koana/linux-arm64/native/libkoana.so
+  #         cp temp/libkoana-osx-x64.dylib lib/koana/osx-x64/native/libkoana.dylib
+  #         cp temp/libkoana-osx-arm64.dylib lib/koana/osx-arm64/native/libkoana.dylib
+  #         cp temp/libkoana-musl-x64.so lib/koana/linux-musl-x64/native/libkoana.so
+  #         cp temp/libkoana-musl-arm64.so lib/koana/linux-musl-arm64/native/libkoana.so
+
+  #     - name: Pack DSharpPlus.Natives.Koana
+  #       shell: bash
+  #       env:
+  #         NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+  #         VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          VERSION="${VERSION:1}"
+          dotnet pack ./build/DSharpPlus.Natives.Koana.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
+          dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
