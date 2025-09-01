@@ -137,19 +137,16 @@ jobs:
           ./autogen.sh
           CFLAGS="-march=x86-64-v2" ./configure --disable-maintainer-mode --enable-shared --enable-sse --disable-examples
           make -j4
-          pwd
-          ls
-          find . -name *.so
 
       - name: Rename native
         shell: bash
-        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp-linux-x64.so
+        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-linux-x64.so
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: speexdsp-linux-x64
-          path: libspeexdsp-linux-x64.so
+          path: libspeexdsp/.libs/libspeexdsp-linux-x64.so
 
   build-linux-arm64:
     runs-on: ubuntu-24.04-arm
@@ -170,13 +167,13 @@ jobs:
 
       - name: Rename native
         shell: bash
-        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp-linux-arm64.so
+        run: mv libspeexdsp/.libs/libspeexdsp.so libspeexdsp/.libs/libspeexdsp-linux-arm64.so
           
       - name: Publish Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: speexdsp-linux-arm64
-          path: libspeexdsp-linux-arm64.so
+          path: libspeexdsp/.libs/libspeexdsp-linux-arm64.so
 
   # build-macos-x64:
   #   runs-on: macos-latest
