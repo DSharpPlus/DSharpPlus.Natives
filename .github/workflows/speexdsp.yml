@@ -168,85 +168,69 @@ jobs:
           name: speexdsp-linux-arm64
           path: build/libspeexdsp-linux-arm64.so
 
-  # build-macos-x64:
-  #   runs-on: macos-latest
-  #   needs: version
-  #   steps:
-  #     - name: Clone speexdsp repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: xiph/speexdsp
-  #         ref: ${{needs.version.outputs.version}}
-          
-  #     - name: Install nasm
-  #       shell: bash
-  #       run: |
-  #         brew install nasm
-          
-  #     - name: Build openssl
-  #       shell: bash
-  #       run: |
-  #         git clone https://github.com/openssl/openssl
-  #         cd openssl
-  #         git checkout openssl-3.5.0
-  #         ./Configure no-makedepend no-shared darwin64-x86_64-cc
-  #         make -j4
-          
-  #     - name: Build speexdsp
-  #       shell: bash
-  #       run: |
-  #         cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=x86_64
-  #         cmake --build build --config Release --parallel
+  build-macos-x64:
+    runs-on: macos-latest
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
 
-  #     - name: Rename native
-  #       shell: bash
-  #       run: mv build/libkoana.dylib build/libkoana-osx-x64.dylib
+      - name: Clone Natives repo
+        uses: actions/checkout@v4
+        with:
+          path: natives
           
-  #     - name: Publish Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: koana-macos-x64
-  #         path: build/libkoana-osx-x64.dylib
+      - name: Build speexdsp
+        shell: bash
+        run: |
+          cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -DSPEEX_USE_SSE=ON
+          cmake --build build --config Release --parallel
 
-  # build-macos-arm64:
-  #   runs-on: macos-latest
-  #   needs: version
-  #   steps:
-  #     - name: Clone speexdsp repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: xiph/speexdsp
-  #         ref: ${{needs.version.outputs.version}}
+      - name: Rename native
+        shell: bash
+        run: mv build/libspeexdsp.dylib build/libspeexdsp-osx-x64.dylib
           
-  #     - name: Install nasm
-  #       shell: bash
-  #       run: |
-  #         brew install nasm
-          
-  #     - name: Build openssl
-  #       shell: bash
-  #       run: |
-  #         git clone https://github.com/openssl/openssl
-  #         cd openssl
-  #         git checkout openssl-3.5.0
-  #         ./Configure no-makedepend no-shared darwin64-arm64-cc
-  #         make -j4
-          
-  #     - name: Build speexdsp
-  #       shell: bash
-  #       run: |
-  #         cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=arm64
-  #         cmake --build build --config Release --parallel
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: koana-macos-x64
+          path: build/libspeexdsp-osx-x64.dylib
 
-  #     - name: Rename native
-  #       shell: bash
-  #       run: mv build/libkoana.dylib build/libkoana-osx-arm64.dylib
+  build-macos-arm64:
+    runs-on: macos-latest
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
           
-  #     - name: Publish Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: koana-macos-arm64
-  #         path: build/libkoana-osx-arm64.dylib
+      - name: Clone Natives repo
+        uses: actions/checkout@v4
+        with:
+          path: natives
+          
+      - name: Build speexdsp
+        shell: bash
+        run: |
+          cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build
+          cmake --build build --config Release --parallel
+
+      - name: Rename native
+        shell: bash
+        run: mv build/libkoana.dylib build/libspeexdsp-osx-arm64.dylib
+          
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: koana-macos-arm64
+          path: build/libspeexdsp-osx-arm64.dylib
 
   build-musl-x64:
     runs-on: ubuntu-latest
