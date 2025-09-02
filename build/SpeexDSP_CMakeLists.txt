@@ -1,0 +1,57 @@
+cmake_minimum_required (VERSION 3.19)
+
+project(
+    speexdsp
+    VERSION "1.2.1"
+    LANGUAGES C
+    DESCRIPTION "Speex audio processing library"
+)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(BUILD_SHARED_LIBS ON)
+
+add_compile_definitions(FLOATING_POINT)
+add_compile_definitions(EXPORT= )
+add_compile_definitions(USE_SMALLFT)
+
+if(WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+else()
+    # the type aliasing is so archaic it doesn't Just Work on linux, so, pretend we're on symbian32 gcc which has correct type aliases for us
+    add_compile_definitions(__SYMBIAN32__)
+endif()
+
+# enable SSE and neon optimizations by passing -DSPEEX_USE_SSE and -DSPEEX_USE_NEON respectively
+if(SPEEX_USE_SSE)
+    add_compile_definitions(USE_SSE= )
+    add_compile_definitions(USE_SSE2= )
+endif()
+
+if (SPEEX_USE_NEON)
+    add_compile_definitions(USE_NEON= )
+endif()
+
+set(SOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/libspeexdsp)
+
+set(SOURCES
+    ${SOURCE_PATH}/buffer.c
+    ${SOURCE_PATH}/fftwrap.c
+    ${SOURCE_PATH}/filterbank.c
+    ${SOURCE_PATH}/jitter.c
+    ${SOURCE_PATH}/kiss_fft.c
+    ${SOURCE_PATH}/kiss_fftr.c
+    ${SOURCE_PATH}/mdf.c
+    ${SOURCE_PATH}/preprocess.c
+    ${SOURCE_PATH}/resample.c
+    ${SOURCE_PATH}/scal.c
+    ${SOURCE_PATH}/smallft.c)
+
+add_library(speexdsp SHARED ${SOURCES})
+target_include_directories(speexdsp PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+if(WIN32)
+    target_compile_options(speexdsp PUBLIC /O2)
+else()
+    target_compile_options(speexdsp PUBLIC -O3)
+endif()
