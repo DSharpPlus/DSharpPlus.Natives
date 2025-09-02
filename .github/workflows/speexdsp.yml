@@ -292,6 +292,7 @@ jobs:
             g++
             nasm
             linux-headers
+            musl-dev
           
       - name: Build speexdsp
         shell: alpine.sh {0}
@@ -338,6 +339,7 @@ jobs:
             g++
             nasm
             linux-headers
+            musl-dev
 
       - name: Build speexdsp
         shell: alpine.sh {0}
