@@ -171,10 +171,8 @@ jobs:
       - name: Build speexdsp
         shell: bash
         run: |
-          gcc -v
-          find / -name stdint.h
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_NEON=ON
+          cmake -B build
           cmake --build build --config Release --parallel
 
       - name: Rename native
@@ -294,7 +292,6 @@ jobs:
             g++
             nasm
             linux-headers
-            musl-dev
           
       - name: Build speexdsp
         shell: alpine.sh {0}
@@ -341,13 +338,12 @@ jobs:
             g++
             nasm
             linux-headers
-            musl-dev
 
       - name: Build speexdsp
         shell: alpine.sh {0}
         run: |
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_NEON=ON
+          cmake -B build
           cmake --build build --config Release --parallel
       
       - name: Rename native
