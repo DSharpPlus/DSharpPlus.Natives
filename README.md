@@ -14,3 +14,6 @@ This repository contains packaging code for native libraries used by DSharpPlus.
 - Koana (forked from [dpp](https://github.com/brainboxdotcc/dpp))
   - buildscript: .github/workflows/koana.yml
   - license: licenses/koana-license.txt
+- SpeexDSP 
+  - buildscript: .github/workflows/speexdsp.yml
+  - license: licenses/speexdsp-license.txt
