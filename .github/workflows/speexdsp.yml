@@ -27,99 +27,71 @@ jobs:
           git checkout "$LATEST_TAG"
           echo "version=$LATEST_TAG" >> $GITHUB_OUTPUT
 
-  # build-windows-x64:
-  #   runs-on: windows-latest
-  #   needs: version
-  #   steps:
-  #     - name: Clone speexdsp repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: xiph/speexdsp
-  #         ref: ${{needs.version.outputs.version}}
+  build-windows-x64:
+    runs-on: windows-latest
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
 
-  #     - name: Setup VS build tools
-  #       uses: seanmiddleditch/gha-setup-vsdevenv@v5
-  #       with:
-  #         host_arch: amd64
-  #         arch: amd64
+      - name: Setup VS build tools
+        uses: seanmiddleditch/gha-setup-vsdevenv@v5
+        with:
+          host_arch: amd64
+          arch: amd64
           
-  #     - name: Install nasm
-  #       shell: pwsh
-  #       run: |
-  #         choco install nasm
-          
-  #     - name: Build openssl
-  #       shell: pwsh
-  #       run: |
-  #         git clone https://github.com/openssl/openssl
-  #         cd openssl
-  #         git checkout openssl-3.5.0
-  #         $env:PATH += ";C:\Program Files\NASM"
-  #         C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64A
-  #         nmake
-          
-  #     - name: Build koana
-  #       shell: pwsh
-  #       run: |
-  #         cmake -B build -A x64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto_static.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl_static.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
-  #         cmake --build build --config Release --parallel
+      - name: Build speexdsp
+        shell: pwsh
+        run: |
+          cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -A x64 -DSPEEX_USE_SSE=ON
+          cmake --build build --config Release --parallel
 
-  #     - name: Rename native
-  #       shell: bash
-  #       run: mv build/Release/koana.dll build/Release/koana-win-x64.dll
+      - name: Rename native
+        shell: bash
+        run: mv build\Release\speexdsp.dll build\Release\speexdsp-win-x64.dll
           
-  #     - name: Publish Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: koana-windows-x64
-  #         path: build/Release/koana-win-x64.dll
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speexdsp-windows-x64
+          path: build\Release\speexdsp-win-x64.dll
 
-  # build-windows-arm64:
-  #   runs-on: windows-11-arm
-  #   needs: version
-  #   steps:
-  #     - name: Clone speexdsp repo
-  #       uses: actions/checkout@v4
-  #       with:
-  #         repository: xiph/speexdsp
-  #         ref: ${{needs.version.outputs.version}}
+  build-windows-arm64:
+    runs-on: windows-11-arm
+    needs: version
+    steps:
+      - name: Clone speexdsp repo
+        uses: actions/checkout@v4
+        with:
+          repository: xiph/speexdsp
+          ref: ${{needs.version.outputs.version}}
 
-  #     - name: Setup VS build tools
-  #       uses: seanmiddleditch/gha-setup-vsdevenv@v5
-  #       with:
-  #         host_arch: arm64
-  #         arch: arm64
+      - name: Setup VS build tools
+        uses: seanmiddleditch/gha-setup-vsdevenv@v5
+        with:
+          host_arch: arm64
+          arch: arm64
           
-  #     - name: Install nasm
-  #       shell: pwsh
-  #       run: |
-  #         choco install nasm
-          
-  #     - name: Build openssl
-  #       shell: pwsh
-  #       run: |
-  #         git clone https://github.com/openssl/openssl
-  #         cd openssl
-  #         git checkout openssl-3.5.0
-  #         $env:PATH += ";C:\Program Files\NASM"
-  #         C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64-ARM
-  #         nmake
-          
-  #     - name: Build koana
-  #       shell: pwsh
-  #       run: |
-  #         cmake -B build -A ARM64 -DOPENSSL_ROOT_DIR=".\openssl\" -DOPENSSL_CRYPTO_LIBRARY=".\openssl\libcrypto_static.lib" -DOPENSSL_SSL_LIBRARY=".\openssl\libssl_static.lib" -DOPENSSL_INCLUDE_DIR=".\openssl\include\"
-  #         cmake --build build --config Release --parallel
+      - name: Build speexdsp
+        shell: pwsh
+        run: |
+          cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
+          cmake -B build -A ARM64
+          cmake --build build --config Release --parallel
 
-  #     - name: Rename native
-  #       shell: bash
-  #       run: mv build/Release/koana.dll build/Release/koana-win-arm64.dll
+      - name: Rename native
+        shell: bash
+        run: mv build\Release\speexdsp.dll build\Release\speexdsp-win-arm64.dll
           
-  #     - name: Publish Artifacts
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: koana-windows-arm64
-  #         path: build/Release/koana-win-arm64.dll
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speexdsp-windows-arm64
+          path: build\Release\speexdsp-win-arm64.dll
 
   build-linux-x64:
     runs-on: ubuntu-latest
@@ -209,7 +181,7 @@ jobs:
   #         ./Configure no-makedepend no-shared darwin64-x86_64-cc
   #         make -j4
           
-  #     - name: Build koana
+  #     - name: Build speexdsp
   #       shell: bash
   #       run: |
   #         cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=x86_64
@@ -249,7 +221,7 @@ jobs:
   #         ./Configure no-makedepend no-shared darwin64-arm64-cc
   #         make -j4
           
-  #     - name: Build koana
+  #     - name: Build speexdsp
   #       shell: bash
   #       run: |
   #         cmake -B build -DOPENSSL_ROOT_DIR="./openssl/" -DOPENSSL_CRYPTO_LIBRARY="./openssl/libcrypto.a" -DOPENSSL_SSL_LIBRARY="./openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="./openssl/include/" -DCMAKE_OSX_ARCHITECTURES=arm64
