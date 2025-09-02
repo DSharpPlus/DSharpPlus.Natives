@@ -187,7 +187,7 @@ jobs:
         shell: bash
         run: |
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
-          cmake -B build -DSPEEX_USE_SSE=ON
+          cmake -B build
           cmake --build build --config Release --parallel
 
       - name: Rename native
