@@ -366,7 +366,7 @@ jobs:
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
           VERSION: ${{ needs.version.outputs.version }}
-       run: |
-         VERSION="${VERSION:1}"
-         dotnet pack ./build/DSharpPlus.Natives.Speex.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
-         dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
+        run: |
+          VERSION="${VERSION:1}"
+          dotnet pack ./build/DSharpPlus.Natives.Speex.csproj -c Release -p:Version="$VERSION.${{ github.run_number }}"
+          dotnet nuget push "artifacts/**" --skip-duplicate -k "$NUGET_API_KEY" -s https://api.nuget.org/v3/index.json
