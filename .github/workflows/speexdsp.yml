@@ -168,9 +168,11 @@ jobs:
         with:
           path: natives
           
-      - name: Build koana
+      - name: Build speexdsp
         shell: bash
         run: |
+          gcc -v
+          find / -name stdint.h
           cp natives/build/SpeexDSP_CMakeLists.txt CMakeLists.txt
           cmake -B build -DSPEEX_USE_NEON=ON
           cmake --build build --config Release --parallel
