@@ -6,6 +6,7 @@ on:
       - master
     paths:
       - '.github/workflows/speexdsp.yml'
+      - 'build/SpeexDSP_CMakeLists.txt'
 
 jobs:
   version:
@@ -36,6 +37,11 @@ jobs:
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
+
+      - name: Clone Natives repo
+        uses: actions/checkout@v4
+        with:
+          path: natives
 
       - name: Setup VS build tools
         uses: seanmiddleditch/gha-setup-vsdevenv@v5
@@ -69,6 +75,11 @@ jobs:
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
+
+      - name: Clone Natives repo
+        uses: actions/checkout@v4
+        with:
+          path: natives
 
       - name: Setup VS build tools
         uses: seanmiddleditch/gha-setup-vsdevenv@v5
