@@ -53,7 +53,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           $env:PATH += ";C:\Program Files\NASM"
           C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64A
           nmake
@@ -100,7 +100,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           $env:PATH += ";C:\Program Files\NASM"
           C:\Strawberry\perl\bin\perl.exe Configure no-makedepend VC-WIN64-ARM
           nmake
@@ -142,7 +142,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           ./Configure no-makedepend linux-x86_64
           make -j4
           
@@ -183,7 +183,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           ./Configure no-makedepend linux-aarch64
           make -j4
           
@@ -223,7 +223,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           ./Configure no-makedepend no-shared darwin64-x86_64-cc
           make -j4
           
@@ -263,7 +263,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           ./Configure no-makedepend no-shared darwin64-arm64-cc
           make -j4
           
@@ -312,7 +312,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           ./Configure no-makedepend linux-x86_64
           make -j4
           
@@ -362,7 +362,7 @@ jobs:
         run: |
           git clone https://github.com/openssl/openssl
           cd openssl
-          git checkout openssl-3.5.0
+          git checkout openssl-3.5.3
           ./Configure no-makedepend linux-aarch64
           make -j4
           
