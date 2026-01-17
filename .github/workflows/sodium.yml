@@ -118,16 +118,24 @@ jobs:
           repository: jedisct1/libsodium
           submodules: recursive
         
+      # - name: Checkout latest Tag
+      #   shell: bash
+      #   run: |
+      #     git fetch --tags
+      #     LATEST_TAG=$(git tag --sort=-v:refname | head -1)
+      #     git checkout "$LATEST_TAG"
+      #     VERSION="${LATEST_TAG%-RELEASE}"
+      #     VERSION="${VERSION%-FINAL}"
+      #     echo "version=$VERSION" >> $GITHUB_OUTPUT
+      
       - name: Checkout latest Tag
+        id: print-version
         shell: bash
         run: |
-          git fetch --tags
-          LATEST_TAG=$(git tag --sort=-v:refname | head -1)
-          git checkout "$LATEST_TAG"
-          VERSION="${LATEST_TAG%-RELEASE}"
-          VERSION="${VERSION%-FINAL}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-        
+          git fetch
+          git checkout stable
+          echo "version=1.0.21" >> $GITHUB_OUTPUT
+          
       - name: Setup Alpine Linux for x64
         uses: jirutka/setup-alpine@v1
         with:
