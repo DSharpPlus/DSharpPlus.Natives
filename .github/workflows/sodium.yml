@@ -27,16 +27,25 @@ jobs:
           repository: jedisct1/libsodium
           submodules: recursive
 
+      # - name: Checkout latest Tag
+      #   id: print-version
+      #   shell: bash
+      #   run: |
+      #     git fetch --tags
+      #     LATEST_TAG=$(git tag --sort=-v:refname | head -1)
+      #     git checkout "$LATEST_TAG"
+      #     VERSION="${LATEST_TAG%-RELEASE}"
+      #     VERSION="${VERSION%-FINAL}"
+      #     echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      # 1.0.21 is broken, there is no 1.0.22 (yet), main dev says 'just clone stable': https://github.com/jedisct1/libsodium/issues/1509 and https://github.com/jedisct1/libsodium/issues/1502
       - name: Checkout latest Tag
         id: print-version
         shell: bash
         run: |
-          git fetch --tags
-          LATEST_TAG=$(git tag --sort=-v:refname | head -1)
-          git checkout "$LATEST_TAG"
-          VERSION="${LATEST_TAG%-RELEASE}"
-          VERSION="${VERSION%-FINAL}"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          git fetch
+          git checkout stable
+          echo "version=1.0.21" >> $GITHUB_OUTPUT
 
       - name: Install Visual Studio 2022 Build Tools
         if: matrix.os == 'windows-latest'
