@@ -183,9 +183,9 @@ jobs:
           mkdir -p lib/opus/osx/native
           mkdir -p lib/opus/linux-musl-x64/native
           mkdir -p lib/opus/linux-musl-arm64/native
-          cp temp/x64/libopus.dll lib/opus/win-x64/native/libopus.dll
+          cp temp/x64/libopus.dll lib/opus/win-x64/native/opus.dll
           cp temp/x64/libopus.so lib/opus/linux-x64/native/libopus.so
-          cp temp/ARM64/libopus.dll lib/opus/win-arm64/native/libopus.dll
+          cp temp/ARM64/libopus.dll lib/opus/win-arm64/native/opus.dll
           cp temp/ARM64/libopus.so lib/opus/linux-arm64/native/libopus.so
           cp temp/libopus.dylib lib/opus/osx/native/libopus.dylib
           cp temp/x64/libopus.musl.so lib/opus/linux-musl-x64/native/libopus.so
