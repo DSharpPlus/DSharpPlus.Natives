@@ -36,7 +36,6 @@ jobs:
         run: |
           git fetch --tags
           LATEST_TAG=$(git tag | grep -E ^v[0-9]+.[0-9]+.[0-9]+$ | tail -1)
-          git checkout "$LATEST_TAG"
           echo "version=$LATEST_TAG" >> $GITHUB_OUTPUT
       
       - name: Build opus
@@ -95,13 +94,6 @@ jobs:
         with:
           repository: DSharpPlus/opus
           submodules: recursive
-        
-      - name: Checkout latest Tag
-        shell: bash
-        run: |
-          git fetch --tags
-          LATEST_TAG=$(git tag | grep -E ^v[0-9]+.[0-9]+.[0-9]+$ | tail -1)
-          git checkout "$LATEST_TAG"
         
       - name: Setup Alpine Linux for x64
         uses: jirutka/setup-alpine@v1
