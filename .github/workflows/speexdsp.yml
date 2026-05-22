@@ -15,7 +15,7 @@ jobs:
       version: ${{ steps.print-version.outputs.version }}
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           
@@ -33,13 +33,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
 
@@ -61,7 +61,7 @@ jobs:
         run: mv build/Release/speexdsp.dll build/Release/speexdsp-win-x64.dll
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-windows-x64
           path: build\Release\speexdsp-win-x64.dll
@@ -71,13 +71,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
 
@@ -99,7 +99,7 @@ jobs:
         run: mv build/Release/speexdsp.dll build/Release/speexdsp-win-arm64.dll
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-windows-arm64
           path: build\Release\speexdsp-win-arm64.dll
@@ -109,13 +109,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
           
@@ -131,7 +131,7 @@ jobs:
         run: mv build/libspeexdsp.so build/libspeexdsp-linux-x64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-linux-x64
           path: build/libspeexdsp-linux-x64.so
@@ -141,13 +141,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
           
@@ -163,7 +163,7 @@ jobs:
         run: mv build/libspeexdsp.so build/libspeexdsp-linux-arm64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-linux-arm64
           path: build/libspeexdsp-linux-arm64.so
@@ -173,13 +173,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
           
@@ -195,7 +195,7 @@ jobs:
         run: mv build/libspeexdsp.dylib build/libspeexdsp-osx-x64.dylib
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-macos-x64
           path: build/libspeexdsp-osx-x64.dylib
@@ -205,13 +205,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
           
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
           
@@ -227,7 +227,7 @@ jobs:
         run: mv build/libspeexdsp.dylib build/libspeexdsp-osx-arm64.dylib
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-macos-arm64
           path: build/libspeexdsp-osx-arm64.dylib
@@ -237,13 +237,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
           
@@ -272,7 +272,7 @@ jobs:
         run: mv build/libspeexdsp.so build/libspeexdsp-musl-x64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-musl-x64
           path: build/libspeexdsp-musl-x64.so
@@ -282,13 +282,13 @@ jobs:
     needs: version
     steps:
       - name: Clone speexdsp repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: xiph/speexdsp
           ref: ${{needs.version.outputs.version}}
 
       - name: Clone Natives repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: natives
           
@@ -318,7 +318,7 @@ jobs:
         run: mv build/libspeexdsp.so build/libspeexdsp-musl-arm64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: speexdsp-musl-arm64
           path: build/libspeexdsp-musl-arm64.so
@@ -328,7 +328,7 @@ jobs:
     needs: [version, build-windows-x64, build-windows-arm64, build-linux-x64, build-linux-arm64, build-macos-x64, build-macos-arm64, build-musl-x64, build-musl-arm64]
     steps:
       - name: Checkout CSPROJ files
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

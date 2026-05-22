@@ -25,7 +25,7 @@ jobs:
           
     steps:
       - name: Clone zstd repo
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
         with:
           repository: facebook/zstd
           submodules: recursive
@@ -79,7 +79,7 @@ jobs:
           fi
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v7
         with:
           name: zstd-${{ matrix.os }}
           path: output
@@ -92,7 +92,7 @@ jobs:
     # We sadly cant use a matrix to run x64 and ARM64, because it would give use 2 artifacts
     steps:
       - name: Clone zstd repo
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
         with:
           repository: facebook/zstd
           submodules: recursive
@@ -152,7 +152,7 @@ jobs:
           cd ..
 
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v7
         with:
           name: zstd-alpine-latest
           path: output
@@ -164,7 +164,7 @@ jobs:
     
     steps:
       - name: Checkout CSPROJ files
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4

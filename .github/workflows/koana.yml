@@ -14,7 +14,7 @@ jobs:
       version: ${{ steps.print-version.outputs.version }}
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           
@@ -32,7 +32,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -69,7 +69,7 @@ jobs:
         run: mv build/Release/koana.dll build/Release/koana-win-x64.dll
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-windows-x64
           path: build/Release/koana-win-x64.dll
@@ -79,7 +79,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -116,7 +116,7 @@ jobs:
         run: mv build/Release/koana.dll build/Release/koana-win-arm64.dll
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-windows-arm64
           path: build/Release/koana-win-arm64.dll
@@ -126,7 +126,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -157,7 +157,7 @@ jobs:
         run: mv build/libkoana.so build/libkoana-linux-x64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-linux-x64
           path: build/libkoana-linux-x64.so
@@ -167,7 +167,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -198,7 +198,7 @@ jobs:
         run: mv build/libkoana.so build/libkoana-linux-arm64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-linux-arm64
           path: build/libkoana-linux-arm64.so
@@ -208,7 +208,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -238,7 +238,7 @@ jobs:
         run: mv build/libkoana.dylib build/libkoana-osx-x64.dylib
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-macos-x64
           path: build/libkoana-osx-x64.dylib
@@ -248,7 +248,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -278,7 +278,7 @@ jobs:
         run: mv build/libkoana.dylib build/libkoana-osx-arm64.dylib
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-macos-arm64
           path: build/libkoana-osx-arm64.dylib
@@ -288,7 +288,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -327,7 +327,7 @@ jobs:
         run: mv build/libkoana.so build/libkoana-musl-x64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-musl-x64
           path: build/libkoana-musl-x64.so
@@ -337,7 +337,7 @@ jobs:
     needs: version
     steps:
       - name: Clone koana repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DSharpPlus/libkoana
           ref: ${{needs.version.outputs.version}}
@@ -377,7 +377,7 @@ jobs:
         run: mv build/libkoana.so build/libkoana-musl-arm64.so
           
       - name: Publish Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: koana-musl-arm64
           path: build/libkoana-musl-arm64.so
@@ -387,7 +387,7 @@ jobs:
     needs: [version, build-windows-x64, build-windows-arm64, build-linux-x64, build-linux-arm64, build-macos-x64, build-macos-arm64, build-musl-x64, build-musl-arm64]
     steps:
       - name: Checkout CSPROJ files
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
